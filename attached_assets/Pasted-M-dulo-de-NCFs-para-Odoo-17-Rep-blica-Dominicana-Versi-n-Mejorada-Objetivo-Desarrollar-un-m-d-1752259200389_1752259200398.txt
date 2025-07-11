@@ -1,0 +1,156 @@
+Módulo de NCFs para Odoo 17 (República Dominicana) - Versión Mejorada
+Objetivo:
+Desarrollar un módulo de NCFs para Odoo 17 que cumpla con los siguientes requisitos clave:
+
+Asignación automática secuencial de números NCF después del prefijo
+
+Gestión de vencimientos con alertas preventivas
+
+Control de secuencias con notificaciones de agotamiento
+
+Integración fluida con el proceso de facturación
+
+1. Gestión de Secuencias NCF
+A. Configuración de Prefijos y Secuencias
+Los usuarios deben poder:
+
+Registrar prefijos NCF (Ej: B02, E31)
+
+Asignar tipo de comprobante a cada prefijo (Factura, NC/ND, etc.)
+
+Definir fechas de vencimiento para cada lote de NCFs
+
+B. Asignación Automática de Números
+Primer uso:
+
+Al crear una factura de consumidor final: B0200000001
+
+Siguiente factura: B0200000002
+
+Sistema completa automáticamente los ceros hasta 8 dígitos
+
+Selección simple:
+
+Usuario solo selecciona tipo de NCF (Factura, NC, etc.)
+
+Sistema asigna automáticamente el siguiente número disponible
+
+C. Validaciones Estrictas
+Bloquear NCFs vencidos: No permitir su uso bajo ninguna circunstancia
+
+Alertas tempranas:
+
+30 días antes del vencimiento
+
+Cuando quede el 10% de números disponibles en una secuencia
+
+2. Flujo de Facturación
+A. Proceso de Asignación
+Usuario selecciona tipo de documento (Factura, NC, ND)
+
+Sistema:
+
+Identifica el prefijo correspondiente
+
+Asigna el próximo número secuencial
+
+Completa automáticamente con ceros (8 dígitos total)
+
+Muestra el NCF completo en el formulario
+
+B. Restricciones
+No permitir:
+
+Saltar números en la secuencia
+
+Usar NCFs vencidos
+
+Asignar manualmente números (excepto administradores)
+
+C. Visualización
+Mostrar NCF asignado en:
+
+Vista de formulario de factura
+
+Reporte PDF/XML de factura
+
+Listados de facturas
+
+3. Alertas y Notificaciones
+A. Tipos de Alertas
+Vencimiento próximo (30 días antes):
+
+Notificación en dashboard
+
+Email opcional a usuarios designados
+
+Secuencia por agotarse (10% restante):
+
+Alerta visible al crear facturas
+
+Notificación en el módulo de NCFs
+
+B. Panel de Control
+Sección especial que muestre:
+
+Secuencias con vencimientos próximos
+
+Prefijos con pocos números disponibles
+
+NCFs recientemente utilizados
+
+4. Integración con Reportes DGII
+A. Reporte 606 (Ventas)
+Incluir automáticamente todos los NCFs utilizados
+
+Resaltar facturas sin NCF asignado (si las hay)
+
+B. Reporte 607 (Compras)
+Validar que NCFs de proveedores tengan formato correcto
+
+Alertar sobre NCFs de proveedores vencidos
+
+5. Requerimientos Técnicos para Odoo 17
+A. Modelos Necesarios
+NCF Sequences:
+
+Prefijo
+
+Tipo de comprobante
+
+Rango actual
+
+Fecha vencimiento
+
+Estado (Activo/Vencido)
+
+NCF Assignments:
+
+Factura relacionada
+
+NCF completo
+
+Fecha de uso
+
+B. Vistas Requeridas
+Formulario de configuración de secuencias
+
+Listado de NCFs utilizados
+
+Panel de alertas y vencimientos
+
+C. Reglas de Acceso
+Solo administradores pueden:
+
+Crear nuevos prefijos
+
+Modificar fechas de vencimiento
+
+Resetear secuencias
+
+Nota Final:
+El sistema debe garantizar cumplimiento DGII mientras mantiene usabilidad sencilla. Las únicas intervenciones manuales requeridas serán:
+
+Seleccionar tipo de NCF al facturar
+
+Revisar y actuar sobre alertas de vencimiento/agotamiento
