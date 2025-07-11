@@ -44,13 +44,7 @@
                 </button>
             </xpath>
 
-            <!-- Add NCF fields to invoice line form -->
-            <xpath expr="//field[@name='line_ids']/tree/field[@name='tax_ids']" position="after">
-                <field name="ncf_assignment_id" invisible="1"/>
-                <field name="ncf_document_type" 
-                       invisible="not parent.requires_ncf"
-                       readonly="parent.state != 'draft'"/>
-            </xpath>
+
             
         </field>
     </record>
