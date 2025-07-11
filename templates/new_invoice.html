@@ -59,11 +59,27 @@
                             </select>
                         </div>
                         <div class="col-md-6">
+                            <label for="ncf_number" class="form-label">Número NCF</label>
+                            <input type="text" class="form-control" id="ncf_number" name="ncf_number" 
+                                   placeholder="Se asignará automáticamente" readonly>
+                            <div class="form-text">El número NCF se asignará automáticamente al guardar la factura</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
                             <label for="currency" class="form-label">Moneda</label>
                             <select class="form-select" id="currency" name="currency">
                                 <option value="DOP">DOP - Peso Dominicano</option>
                                 <option value="USD">USD - Dólar Americano</option>
                                 <option value="EUR">EUR - Euro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="requires_ncf" class="form-label">Requiere NCF</label>
+                            <select class="form-select" id="requires_ncf" name="requires_ncf">
+                                <option value="true">Sí</option>
+                                <option value="false">No</option>
                             </select>
                         </div>
                     </div>
@@ -86,14 +102,7 @@
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="requires_ncf" name="requires_ncf" checked>
-                            <label class="form-check-label" for="requires_ncf">
-                                Requiere NCF
-                            </label>
-                        </div>
-                    </div>
+
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a href="{{ url_for('main.invoices') }}" class="btn btn-secondary me-md-2">

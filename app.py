@@ -29,6 +29,10 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # initialize the app with the extension, flask-sqlalchemy >= 3.0.x
 db.init_app(app)
 
+# Enable CSRF protection
+from flask_wtf.csrf import CSRFProtect
+csrf = CSRFProtect(app)
+
 # Register routes
 from routes import main_bp
 app.register_blueprint(main_bp)
