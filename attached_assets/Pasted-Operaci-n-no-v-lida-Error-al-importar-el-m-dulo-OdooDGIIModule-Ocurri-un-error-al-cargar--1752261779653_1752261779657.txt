@@ -1,0 +1,33 @@
+Operación no válida
+
+Error al importar el módulo 'OdooDGIIModule'.
+
+ Ocurrió un error al cargar el módulo OdooDGIIModule: no se pudo procesar el archivo /tmp/tmpdi0m5e54/OdooDGIIModule/security/ir.model.access.csv:
+No se encontraron registros que coincidan con id externo 'model_ncf_sequence' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_sequence' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_sequence' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_sequence' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_assignment' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_assignment' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_assignment' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_assignment' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_sequence_wizard' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_sequence_wizard' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_ncf_sequence_wizard' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_dgii_report_606' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_dgii_report_606' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_dgii_report_606' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_dgii_report_607' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_dgii_report_607' en el campo 'Model'
+No se encontraron registros que coincidan con id externo 'model_dgii_report_607' en el campo 'Model'
+Es necesario completar el campo 'Model' (model_id)
+Es necesario completar el campo 'Model' (model_id)
+Es necesario completar el campo 'Model' (model_id)
+Es necesario completar el campo 'Model' (model_id)
+Es necesario completar el campo 'Model' (model_id)
+Es necesario completar el campo 'Model' (model_id)
+Es necesario completar el campo 'Model' (model_id)
+Es necesario completar el campo 'Model' (model_id)
+Es necesario completar el campo 'Model' (model_id)
+Es necesario completar el campo 'Model' (model_id)
+Se encontraron más de 10 errores y más de un error por cada 10 segundos, se pausó para evitar mostrar varios errores. 

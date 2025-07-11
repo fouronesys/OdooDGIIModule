@@ -36,9 +36,8 @@ Requirements:
         'web',
     ],
     'data': [
-        # Security
+        # Security groups (must be loaded first)
         'security/security.xml',
-        'security/ir.model.access.csv',
         
         # Data
         'data/ncf_document_types.xml',
@@ -55,6 +54,9 @@ Requirements:
         
         # Reports
         'reports/dgii_reports_views.xml',
+        
+        # Access rights (must be loaded after models are defined)
+        'security/ir.model.access.csv',
     ],
     'demo': [],
     'installable': True,
