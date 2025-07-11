@@ -1,0 +1,81 @@
+Operación no válida
+
+Error al importar el módulo 'OdooDGIIModule-main'.
+
+ while parsing /tmp/tmpzxna93zp/OdooDGIIModule-main/views/ncf_sequence_views.xml:5, somewhere inside
+<record id="view_ncf_sequence_form" model="ir.ui.view">
+        <field name="name">ncf.sequence.form</field>
+        <field name="model">ncf.sequence</field>
+        <field name="arch" type="xml">
+            <form string="NCF Sequence">
+                <header>
+                    <button name="action_reactivate" string="Reactivate" type="object" class="btn-primary" invisible="state != 'inactive'"/>
+                    <button name="action_deactivate" string="Deactivate" type="object" class="btn-secondary" invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,inactive,expired,depleted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_ncf_assignment_from_sequence)d" type="action" class="oe_stat_button" icon="fa-list">
+                            <field name="used_numbers" widget="statinfo" string="Used"/>
+                        </button>
+                    </div>
+                    
+                    <!-- Alert banners -->
+                    <div class="alert alert-warning" role="alert" invisible="not is_expiring_soon">
+                        <strong>Warning:</strong> This NCF sequence will expire in 
+                        <field name="days_to_expiry"/> days.
+                    </div>
+                    
+                    <div class="alert alert-danger" role="alert" invisible="not is_low_availability">
+                        <strong>Alert:</strong> This NCF sequence has low availability 
+                        (<field name="percentage_used" widget="percentage"/> used).
+                    </div>
+                    
+                    <group>
+                        <group name="basic_info">
+                            <field name="prefix" readonly="state in ['expired', 'depleted']"/>
+                            <field name="document_type" readonly="state in ['expired', 'depleted']"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group name="sequence_info">
+                            <field name="current_number" readonly="state in ['expired', 'depleted']"/>
+                            <field name="start_number" readonly="state in ['expired', 'depleted']"/>
+                            <field name="end_number" readonly="state in ['expired', 'depleted']"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="dates">
+                            <field name="start_date" readonly="state in ['expired', 'depleted']"/>
+                            <field name="expiry_date" readonly="state in ['expired', 'depleted']"/>
+                        </group>
+                        <group name="statistics">
+                            <field name="available_numbers"/>
+                            <field name="percentage_used" widget="percentage"/>
+                            <field name="days_to_expiry"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="NCF Assignments" name="assignments">
+                            <field name="assignment_ids" readonly="1">
+                                <tree>
+                                    <field name="ncf_number"/>
+                                    <field name="invoice_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="invoice_amount" sum="Total"/>
+                                    <field name="assignment_date"/>
+                                    <field name="invoice_state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record> 

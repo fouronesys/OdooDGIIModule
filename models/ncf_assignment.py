@@ -7,6 +7,7 @@ from odoo.exceptions import ValidationError
 class NCFAssignment(models.Model):
     _name = 'ncf.assignment'
     _description = 'NCF Assignment to Invoices'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'assignment_date desc, ncf_number desc'
     _rec_name = 'ncf_number'
 
@@ -15,7 +16,8 @@ class NCFAssignment(models.Model):
         string='NCF Number',
         required=True,
         size=11,
-        help='Complete NCF number (prefix + 8 digits)'
+        help='Complete NCF number (prefix + 8 digits)',
+        tracking=True
     )
     
     sequence_id = fields.Many2one(

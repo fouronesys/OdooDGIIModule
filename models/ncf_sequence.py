@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 class NCFSequence(models.Model):
     _name = 'ncf.sequence'
     _description = 'NCF Sequence Management'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'prefix, current_number'
     _rec_name = 'display_name'
 
@@ -19,7 +20,8 @@ class NCFSequence(models.Model):
         string='NCF Prefix',
         required=True,
         size=3,
-        help='3-character NCF prefix (e.g., B02, E31)'
+        help='3-character NCF prefix (e.g., B02, E31)',
+        tracking=True
     )
     
     document_type = fields.Selection([
@@ -72,7 +74,7 @@ class NCFSequence(models.Model):
         ('expired', 'Expired'),
         ('depleted', 'Depleted'),
         ('inactive', 'Inactive'),
-    ], string='Status', default='active', required=True)
+    ], string='Status', default='active', required=True, tracking=True)
     
     company_id = fields.Many2one(
         'res.company',
