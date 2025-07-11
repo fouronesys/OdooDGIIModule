@@ -8,17 +8,24 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
             
-            <!-- Add NCF information after invoice name -->
-            <xpath expr="//field[@name='name']" position="after">
+            <!-- Add NCF information in a prominent group -->
+            <xpath expr="//group[@name='header_left']" position="inside">
                 <field name="requires_ncf" invisible="1"/>
                 <field name="ncf_assignment_id" invisible="1"/>
-                <field name="ncf_number" 
-                       invisible="not requires_ncf"
-                       readonly="1"/>
                 <field name="ncf_document_type" 
+                       string="Tipo de NCF"
+                       widget="selection"
                        invisible="not requires_ncf"
                        required="requires_ncf and state == 'draft'"
                        readonly="state != 'draft'"/>
+            </xpath>
+            
+            <!-- Add NCF Number field -->
+            <xpath expr="//group[@name='header_right']" position="inside">
+                <field name="ncf_number" 
+                       string="Número NCF"
+                       invisible="not requires_ncf"
+                       readonly="1"/>
             </xpath>
             
             <!-- Add NCF action button -->

@@ -20,9 +20,10 @@ class AccountMove(models.Model):
     
     ncf_number = fields.Char(
         related='ncf_assignment_id.ncf_number',
-        string='NCF Number',
+        string='Número NCF',
         store=True,
-        readonly=True
+        readonly=True,
+        help='Número de Comprobante Fiscal asignado a esta factura'
     )
     
     ncf_document_type = fields.Selection([
@@ -35,12 +36,14 @@ class AccountMove(models.Model):
         ('minor_expenses', 'Comprobante de Gastos Menores'),
         ('exterior', 'Comprobante de Operaciones Exteriores'),
         ('payments', 'Comprobante de Pagos'),
-    ], string='NCF Document Type', copy=False)
+    ], string='Tipo de NCF', copy=False, 
+       help='Tipo de Número de Comprobante Fiscal según DGII')
     
     requires_ncf = fields.Boolean(
-        string='Requires NCF',
+        string='Requiere NCF',
         compute='_compute_requires_ncf',
-        store=True
+        store=True,
+        help='Indica si esta factura requiere un Número de Comprobante Fiscal'
     )
     
     @api.depends('move_type', 'company_id', 'partner_id')
