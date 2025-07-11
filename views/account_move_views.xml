@@ -11,6 +11,7 @@
             <!-- Add NCF information after journal -->
             <xpath expr="//field[@name='journal_id']" position="after">
                 <field name="requires_ncf" invisible="1"/>
+                <field name="ncf_assignment_id" invisible="1"/>
                 <field name="ncf_document_type" 
                        invisible="not requires_ncf"
                        required="requires_ncf and state == 'draft'"
