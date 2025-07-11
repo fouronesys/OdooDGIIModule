@@ -101,6 +101,22 @@ The module follows Odoo's standard addon structure:
 ### No External Services
 The module operates entirely within Odoo without external API dependencies, ensuring reliability and data security.
 
+## Current Status
+
+### Demo Application (July 11, 2025)
+Since Odoo 17 is not available via pip installation in the current environment, a comprehensive Flask-based demo application has been created to showcase all NCF management features:
+
+- **Flask Demo App**: Fully functional web application at `demo_app.py`
+- **Complete UI**: Dashboard, sequences, invoices, and assignments views
+- **Sample Data**: Pre-loaded with Dominican Republic NCF examples
+- **Key Features**: Automatic NCF assignment, validation, alerts system
+- **Database**: PostgreSQL integration for production-ready data handling
+
+### Recent Fixes
+- Fixed Odoo manifest syntax error (post_init_hook function placement)
+- Resolved Flask template formatting issues for currency display
+- Updated Flask app for compatibility with newer Flask versions
+
 ## Deployment Strategy
 
 ### Installation Requirements

@@ -60,10 +60,11 @@ Requirements:
     'installable': True,
     'auto_install': False,
     'application': True,
-    'post_init_hook': '_post_init_hook',
+    'post_init_hook': 'post_init_hook',
 }
 
-def _post_init_hook(cr, registry):
+
+def post_init_hook(cr, registry):
     """Post-installation hook to set up default NCF sequences."""
     from odoo import api, SUPERUSER_ID
     
