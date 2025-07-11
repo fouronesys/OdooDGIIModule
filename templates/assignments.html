@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Asignaciones NCF - NCF Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Asignaciones NCF</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-download"></i> Exportar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if assignments %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>NCF</th>
+                                <th>Factura</th>
+                                <th>Cliente</th>
+                                <th>Fecha Factura</th>
+                                <th>Monto</th>
+                                <th>Tipo</th>
+                                <th>Fecha Asignación</th>
+                                <th>Secuencia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assignment in assignments %}
+                            <tr>
+                                <td><code>{{ assignment.ncf_number }}</code></td>
+                                <td><strong>{{ assignment.invoice.invoice_number }}</strong></td>
+                                <td>
+                                    {{ assignment.invoice.customer_name }}
+                                    {% if assignment.invoice.customer_vat %}
+                                        <br><small class="text-muted">{{ assignment.invoice.customer_vat }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ assignment.invoice.invoice_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ assignment.invoice.currency }} {{ "{:,.2f}".format(assignment.invoice.total_amount) }}</td>
+                                <td>
+                                    {% if assignment.document_type == 'invoice' %}
+                                        <span class="badge bg-primary">Crédito Fiscal</span>
+                                    {% elif assignment.document_type == 'invoice_consumer' %}
+                                        <span class="badge bg-info">Consumo</span>
+                                    {% elif assignment.document_type == 'credit_note' %}
+                                        <span class="badge bg-success">Nota Crédito</span>
+                                    {% elif assignment.document_type == 'debit_note' %}
+                                        <span class="badge bg-warning">Nota Débito</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ assignment.document_type }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ assignment.assignment_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <span class="badge bg-outline-primary">{{ assignment.sequence.display_name }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-link fa-3x text-muted mb-3"></i>
+                    <h4>No hay asignaciones NCF</h4>
+                    <p class="text-muted">Las asignaciones NCF aparecerán aquí cuando se asignen números a las facturas.</p>
+                    <a href="{{ url_for('main.invoices') }}" class="btn btn-primary">
+                        <i class="fas fa-file-invoice"></i> Ver Facturas
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

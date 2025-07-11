@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Factura - NCF Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Nueva Factura</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="{{ url_for('main.invoices') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-plus"></i> Crear Nueva Factura
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="invoice_number" class="form-label">Número de Factura</label>
+                            <input type="text" class="form-control" id="invoice_number" name="invoice_number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="invoice_date" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="invoice_date" name="invoice_date" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="customer_name" class="form-label">Nombre del Cliente</label>
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="customer_vat" class="form-label">RNC/Cédula</label>
+                            <input type="text" class="form-control" id="customer_vat" name="customer_vat">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="ncf_document_type" class="form-label">Tipo de Documento NCF</label>
+                            <select class="form-select" id="ncf_document_type" name="ncf_document_type" required>
+                                <option value="">Seleccionar...</option>
+                                {% for value, display in document_types %}
+                                <option value="{{ value }}">{{ display }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="currency" class="form-label">Moneda</label>
+                            <select class="form-select" id="currency" name="currency">
+                                <option value="DOP">DOP - Peso Dominicano</option>
+                                <option value="USD">USD - Dólar Americano</option>
+                                <option value="EUR">EUR - Euro</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="subtotal" class="form-label">Subtotal</label>
+                            <input type="number" class="form-control" id="subtotal" name="subtotal" 
+                                   step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tax_amount" class="form-label">Impuesto</label>
+                            <input type="number" class="form-control" id="tax_amount" name="tax_amount" 
+                                   step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="total_amount" class="form-label">Total</label>
+                            <input type="number" class="form-control" id="total_amount" name="total_amount" 
+                                   step="0.01" min="0" required readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="requires_ncf" name="requires_ncf" checked>
+                            <label class="form-check-label" for="requires_ncf">
+                                Requiere NCF
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('main.invoices') }}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Crear Factura
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle"></i> Información NCF
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>Tipos de Documento:</h6>
+                <ul class="list-unstyled small">
+                    <li><strong>Crédito Fiscal:</strong> Para empresas registradas</li>
+                    <li><strong>Consumo:</strong> Para consumidores finales</li>
+                    <li><strong>Nota de Crédito:</strong> Devoluciones/descuentos</li>
+                    <li><strong>Nota de Débito:</strong> Cargos adicionales</li>
+                </ul>
+                
+                <div class="alert alert-info">
+                    <small>
+                        <i class="fas fa-lightbulb"></i>
+                        <strong>Consejo:</strong> El NCF se asignará automáticamente al crear la factura 
+                        si está marcada como "Requiere NCF".
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date();
+    const dateInput = document.getElementById('invoice_date');
+    dateInput.value = today.toISOString().split('T')[0];
+    
+    // Auto-calculate total
+    const subtotalInput = document.getElementById('subtotal');
+    const taxInput = document.getElementById('tax_amount');
+    const totalInput = document.getElementById('total_amount');
+    
+    function calculateTotal() {
+        const subtotal = parseFloat(subtotalInput.value) || 0;
+        const tax = parseFloat(taxInput.value) || 0;
+        totalInput.value = (subtotal + tax).toFixed(2);
+    }
+    
+    subtotalInput.addEventListener('input', calculateTotal);
+    taxInput.addEventListener('input', calculateTotal);
+    
+    // Auto-calculate tax (18% for Dominican Republic)
+    subtotalInput.addEventListener('blur', function() {
+        const subtotal = parseFloat(this.value) || 0;
+        if (subtotal > 0 && !taxInput.value) {
+            taxInput.value = (subtotal * 0.18).toFixed(2);
+            calculateTotal();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Secuencias NCF - NCF Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Secuencias NCF</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="{{ url_for('main.new_sequence') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i> Nueva Secuencia
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if sequences %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Prefijo</th>
+                                <th>Tipo de Documento</th>
+                                <th>Rango</th>
+                                <th>Disponibles</th>
+                                <th>Usados</th>
+                                <th>% Usado</th>
+                                <th>Vencimiento</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sequence in sequences %}
+                            <tr>
+                                <td><code>{{ sequence.prefix }}</code></td>
+                                <td>{{ sequence.get_document_type_display() }}</td>
+                                <td>{{ sequence.start_number }} - {{ sequence.end_number }}</td>
+                                <td>{{ sequence.available_numbers }}</td>
+                                <td>{{ sequence.used_numbers }}</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar 
+                                            {% if sequence.percentage_used >= 90 %}bg-danger
+                                            {% elif sequence.percentage_used >= 70 %}bg-warning
+                                            {% else %}bg-success{% endif %}" 
+                                            role="progressbar" 
+                                            style="width: {{ sequence.percentage_used }}%"
+                                            aria-valuenow="{{ sequence.percentage_used }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100">
+                                            {{ "%.1f"|format(sequence.percentage_used) }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ sequence.expiry_date.strftime('%Y-%m-%d') }}
+                                    {% if sequence.is_expiring_soon %}
+                                        <br><span class="badge bg-danger">{{ sequence.days_to_expiry }} días</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if sequence.state == 'active' %}
+                                        <span class="badge bg-success">Activo</span>
+                                    {% elif sequence.state == 'depleted' %}
+                                        <span class="badge bg-danger">Agotado</span>
+                                    {% elif sequence.state == 'expired' %}
+                                        <span class="badge bg-secondary">Vencido</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" title="Ver Detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-secondary" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-list-ol fa-3x text-muted mb-3"></i>
+                    <h4>No hay secuencias NCF configuradas</h4>
+                    <p class="text-muted">Crea tu primera secuencia NCF para comenzar a gestionar tus comprobantes fiscales.</p>
+                    <a href="{{ url_for('main.new_sequence') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Crear Primera Secuencia
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

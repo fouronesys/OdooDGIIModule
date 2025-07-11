@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NCF Management System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #343a40;
+        }
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 10px 15px;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+            color: #fff;
+        }
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .alert-card {
+            border-left: 4px solid #dc3545;
+        }
+        .warning-card {
+            border-left: 4px solid #ffc107;
+        }
+        .success-card {
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-3">
+                        <h5 class="text-white">NCF Management</h5>
+                        <small class="text-muted">Sistema de Gestión NCF</small>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}" href="{{ url_for('main.dashboard') }}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint in ['main.sequences', 'main.new_sequence'] %}active{% endif %}" href="{{ url_for('main.sequences') }}">
+                                <i class="fas fa-list-ol"></i> Secuencias NCF
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint in ['main.invoices', 'main.new_invoice'] %}active{% endif %}" href="{{ url_for('main.invoices') }}">
+                                <i class="fas fa-file-invoice"></i> Facturas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.assignments' %}active{% endif %}" href="{{ url_for('main.assignments') }}">
+                                <i class="fas fa-link"></i> Asignaciones NCF
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'main.setup' %}active{% endif %}" href="{{ url_for('main.setup') }}">
+                                <i class="fas fa-cog"></i> Configuración
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

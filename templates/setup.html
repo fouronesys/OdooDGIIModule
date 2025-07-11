@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Configuración - NCF Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Configuración de la Empresa</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-building"></i> Datos de la Empresa
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="name" class="form-label">Nombre de la Empresa</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ company.name if company else '' }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="rnc" class="form-label">RNC</label>
+                            <input type="text" class="form-control" id="rnc" name="rnc" 
+                                   value="{{ company.rnc if company else '' }}" 
+                                   maxlength="11" pattern="[0-9]{9,11}" required>
+                            <small class="form-text text-muted">9-11 dígitos</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="ncf_enabled" name="ncf_enabled" 
+                                   {{ 'checked' if company and company.ncf_enabled else '' }}>
+                            <label class="form-check-label" for="ncf_enabled">
+                                Habilitar Gestión de NCF
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="expiry_alert_days" class="form-label">Días de Alerta de Vencimiento</label>
+                            <input type="number" class="form-control" id="expiry_alert_days" name="expiry_alert_days" 
+                                   value="{{ company.expiry_alert_days if company else 30 }}" 
+                                   min="1" max="365" required>
+                            <small class="form-text text-muted">Días antes del vencimiento para mostrar alertas</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="low_availability_threshold" class="form-label">Umbral de Disponibilidad Baja (%)</label>
+                            <input type="number" class="form-control" id="low_availability_threshold" name="low_availability_threshold" 
+                                   value="{{ company.low_availability_threshold if company else 90.0 }}" 
+                                   min="50" max="99" step="0.1" required>
+                            <small class="form-text text-muted">Porcentaje de uso para alertas de disponibilidad</small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Configuración
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle"></i> Información Legal
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>Normativa DGII:</h6>
+                <ul class="list-unstyled small">
+                    <li><strong>RNC:</strong> Registro Nacional de Contribuyentes obligatorio</li>
+                    <li><strong>NCF:</strong> Número de Comprobante Fiscal para facturación</li>
+                    <li><strong>Secuencias:</strong> Deben ser consecutivas y sin saltos</li>
+                    <li><strong>Vigencia:</strong> Las secuencias tienen fecha de vencimiento</li>
+                </ul>
+                
+                <div class="alert alert-warning">
+                    <small>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Importante:</strong> La configuración correcta es fundamental 
+                        para cumplir con las normativas fiscales dominicanas.
+                    </small>
+                </div>
+                
+                <div class="alert alert-info">
+                    <small>
+                        <i class="fas fa-lightbulb"></i>
+                        <strong>Consejo:</strong> Configure alertas tempranas para evitar 
+                        interrupciones en la facturación.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rncInput = document.getElementById('rnc');
+    
+    // Format RNC input
+    rncInput.addEventListener('input', function() {
+        // Remove non-numeric characters
+        this.value = this.value.replace(/\D/g, '');
+        
+        // Validate length
+        if (this.value.length > 11) {
+            this.value = this.value.slice(0, 11);
+        }
+    });
+    
+    // Validate RNC format
+    rncInput.addEventListener('blur', function() {
+        const rnc = this.value;
+        if (rnc.length < 9) {
+            this.setCustomValidity('El RNC debe tener al menos 9 dígitos');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+});
+</script>
+{% endblock %}
