@@ -1,7 +1,7 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app, db
-from models import NCFSequence, NCFAssignment, Invoice, NCFSequenceForm, InvoiceForm
-from datetime import date
+from flask_models import NCFSequence, NCFAssignment, Invoice, NCFSequenceForm, InvoiceForm
+from datetime import date, timedelta
 import logging
 
 # Enable logging for debugging
@@ -13,7 +13,7 @@ def index():
     total_sequences = NCFSequence.query.count()
     active_sequences = NCFSequence.query.filter_by(state='active').count()
     expiring_soon = NCFSequence.query.filter_by(state='active').filter(
-        NCFSequence.expiry_date <= date.today().replace(day=date.today().day + 30)
+        NCFSequence.expiry_date <= date.today() + timedelta(days=30)
     ).count()
     
     total_invoices = Invoice.query.count()
@@ -41,12 +41,18 @@ def index():
                 'sequence': seq
             })
     
+    # Create stats object for template
+    stats = {
+        'total_sequences': total_sequences,
+        'active_sequences': active_sequences,
+        'expiring_soon': expiring_soon,
+        'low_availability': sum(1 for seq in alert_sequences if seq.is_low_availability),
+        'total_invoices': total_invoices,
+        'total_assignments': total_assignments
+    }
+    
     return render_template('dashboard.html', 
-                         total_sequences=total_sequences,
-                         active_sequences=active_sequences,
-                         expiring_soon=expiring_soon,
-                         total_invoices=total_invoices,
-                         total_assignments=total_assignments,
+                         stats=stats,
                          recent_assignments=recent_assignments,
                          alerts=alerts)
 

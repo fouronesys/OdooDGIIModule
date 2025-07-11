@@ -28,8 +28,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 with app.app_context():
-    # Make sure to import the models here or their tables won't be created
-    import models  # noqa: F401
+    # Make sure to import the Flask models here or their tables won't be created
+    import flask_models  # noqa: F401
     
     db.create_all()
 
