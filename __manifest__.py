@@ -60,25 +60,4 @@ Requirements:
     'installable': True,
     'auto_install': False,
     'application': True,
-    'post_init_hook': 'post_init_hook',
 }
-
-
-def post_init_hook(cr, registry):
-    """Post-installation hook to set up default NCF sequences."""
-    from odoo import api, SUPERUSER_ID
-    
-    env = api.Environment(cr, SUPERUSER_ID, {})
-    
-    # Set up default company NCF configuration
-    companies = env['res.company'].search([])
-    for company in companies:
-        if not company.country_id or company.country_id.code != 'DO':
-            continue
-            
-        # Enable NCF management for Dominican companies
-        company.write({
-            'ncf_management_enabled': True,
-            'ncf_alert_days': 30,
-            'ncf_alert_percentage': 10,
-        })
