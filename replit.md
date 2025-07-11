@@ -128,6 +128,8 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Removed data/ncf_document_types.xml from manifest to resolve persistent parsing issues - templates can be created manually via UI (July 11, 2025)
 - Fixed Odoo 17 compatibility error by removing all deprecated 'attrs' and 'states' attributes from XML views (July 11, 2025)
 - Updated views/account_move_views.xml to use modern Odoo 17 conditional syntax (invisible="condition") (July 11, 2025)
+- Fixed XPath expressions in account_move_views.xml to work with Odoo 17 view structure (July 11, 2025)
+- Added missing ncf_assignment_id field to views for proper conditional rendering (July 11, 2025)
 - Added missing action_ncf_assignment_from_sequence to resolve button reference error in NCF sequence views (July 11, 2025)
 - Fixed mail.thread inheritance in NCF models to enable chatter functionality and resolve XML view parsing (July 11, 2025)
 - Simplified all XML views to basic format for maximum compatibility and removed problematic modern syntax (July 11, 2025)
