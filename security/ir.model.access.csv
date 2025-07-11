@@ -16,3 +16,9 @@ access_dgii_report_606_manager,dgii.report.606.manager,model_dgii_report_606,acc
 access_dgii_report_607_user,dgii.report.607.user,model_dgii_report_607,account.group_account_user,1,0,0,0
 access_dgii_report_607_invoice,dgii.report.607.invoice,model_dgii_report_607,account.group_account_invoice,1,1,1,0
 access_dgii_report_607_manager,dgii.report.607.manager,model_dgii_report_607,account.group_account_manager,1,1,1,1
+access_dgii_report_606_line_user,dgii.report.606.line.user,model_dgii_report_606_line,account.group_account_user,1,0,0,0
+access_dgii_report_606_line_invoice,dgii.report.606.line.invoice,model_dgii_report_606_line,account.group_account_invoice,1,1,1,0
+access_dgii_report_606_line_manager,dgii.report.606.line.manager,model_dgii_report_606_line,account.group_account_manager,1,1,1,1
+access_dgii_report_607_line_user,dgii.report.607.line.user,model_dgii_report_607_line,account.group_account_user,1,0,0,0
+access_dgii_report_607_line_invoice,dgii.report.607.line.invoice,model_dgii_report_607_line,account.group_account_invoice,1,1,1,0
+access_dgii_report_607_line_manager,dgii.report.607.line.manager,model_dgii_report_607_line,account.group_account_manager,1,1,1,1

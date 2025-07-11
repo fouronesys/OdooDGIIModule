@@ -39,18 +39,20 @@ Requirements:
         # Security groups (must be loaded first)
         'security/security.xml',
         
-        # Views
+        # Views (core views first)
         'views/ncf_sequence_views.xml',
         'views/ncf_assignment_views.xml',
         'views/account_move_views.xml',
         'views/ncf_dashboard_views.xml',
-        'views/menu_views.xml',
         
         # Wizards
         'wizards/ncf_sequence_wizard_views.xml',
         
-        # Reports
+        # Reports (must be loaded before menu that references them)
         'reports/dgii_reports_views.xml',
+        
+        # Menu views (loaded last to ensure all actions exist)
+        'views/menu_views.xml',
         
         # Access rights (must be loaded after models are defined)
         'security/ir.model.access.csv',
