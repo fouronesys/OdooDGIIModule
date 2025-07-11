@@ -9,9 +9,9 @@
             <form string="DGII Report 606 - Sales">
                 <header>
                     <button name="action_generate_report" string="Generate Report" type="object" 
-                            class="btn-primary" attrs="{'invisible': [('line_ids', '!=', [])]}"/>
+                            class="btn-primary" invisible="line_ids"/>
                     <button name="action_export_report" string="Export" type="object" 
-                            class="btn-success" attrs="{'invisible': [('line_ids', '=', [])]}"/>
+                            class="btn-success" invisible="not line_ids"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -25,14 +25,14 @@
                             <field name="date_to"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
-                        <group name="export_options" attrs="{'invisible': [('line_ids', '=', [])]}">
+                        <group name="export_options" invisible="not line_ids">
                             <field name="export_format"/>
-                            <field name="export_filename" attrs="{'invisible': [('export_filename', '=', False)]}"/>
+                            <field name="export_filename" invisible="not export_filename"/>
                         </group>
                     </group>
                     
                     <!-- Statistics -->
-                    <div class="row" attrs="{'invisible': [('line_ids', '=', [])]}">
+                    <div class="row" invisible="not line_ids">
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-body">
@@ -54,7 +54,7 @@
                     </div>
                     
                     <!-- Report Lines -->
-                    <notebook attrs="{'invisible': [('line_ids', '=', [])]}">
+                    <notebook invisible="not line_ids">
                         <page string="Report Data" name="report_data">
                             <field name="line_ids" readonly="1">
                                 <tree>
@@ -86,9 +86,9 @@
             <form string="DGII Report 607 - Purchases">
                 <header>
                     <button name="action_generate_report" string="Generate Report" type="object" 
-                            class="btn-primary" attrs="{'invisible': [('line_ids', '!=', [])]}"/>
+                            class="btn-primary" invisible="line_ids"/>
                     <button name="action_export_report" string="Export" type="object" 
-                            class="btn-success" attrs="{'invisible': [('line_ids', '=', [])]}"/>
+                            class="btn-success" invisible="not line_ids"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -102,14 +102,14 @@
                             <field name="date_to"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
-                        <group name="export_options" attrs="{'invisible': [('line_ids', '=', [])]}">
+                        <group name="export_options" invisible="not line_ids">
                             <field name="export_format"/>
-                            <field name="export_filename" attrs="{'invisible': [('export_filename', '=', False)]}"/>
+                            <field name="export_filename" invisible="not export_filename"/>
                         </group>
                     </group>
                     
                     <!-- Statistics -->
-                    <div class="row" attrs="{'invisible': [('line_ids', '=', [])]}">
+                    <div class="row" invisible="not line_ids">
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-body">
@@ -131,12 +131,11 @@
                     </div>
                     
                     <!-- Report Lines -->
-                    <notebook attrs="{'invisible': [('line_ids', '=', [])]}">
+                    <notebook invisible="not line_ids">
                         <page string="Report Data" name="report_data">
                             <field name="line_ids" readonly="1">
-                                <tree decoration-danger="not ncf_valid">
-                                    <field name="supplier_ncf"/>
-                                    <field name="ncf_valid" widget="boolean_toggle"/>
+                                <tree>
+                                    <field name="ncf_number"/>
                                     <field name="document_type_code"/>
                                     <field name="invoice_date"/>
                                     <field name="partner_name"/>
@@ -156,21 +155,20 @@
         </field>
     </record>
 
-    <!-- Actions for DGII Reports -->
+    <!-- Action for DGII Report 606 -->
     <record id="action_dgii_report_606" model="ir.actions.act_window">
         <field name="name">DGII Report 606 - Sales</field>
         <field name="res_model">dgii.report.606</field>
         <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="view_id" ref="view_dgii_report_606_form"/>
+        <field name="target">current</field>
     </record>
 
+    <!-- Action for DGII Report 607 -->
     <record id="action_dgii_report_607" model="ir.actions.act_window">
         <field name="name">DGII Report 607 - Purchases</field>
         <field name="res_model">dgii.report.607</field>
         <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="view_id" ref="view_dgii_report_607_form"/>
+        <field name="target">current</field>
     </record>
 
 </odoo>
