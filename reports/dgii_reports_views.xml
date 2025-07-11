@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- DGII Report 606 Form View -->
+    <record id="view_dgii_report_606_form" model="ir.ui.view">
+        <field name="name">dgii.report.606.form</field>
+        <field name="model">dgii.report.606</field>
+        <field name="arch" type="xml">
+            <form string="DGII Report 606 - Sales">
+                <header>
+                    <button name="action_generate_report" string="Generate Report" type="object" 
+                            class="btn-primary" attrs="{'invisible': [('line_ids', '!=', [])]}"/>
+                    <button name="action_export_report" string="Export" type="object" 
+                            class="btn-success" attrs="{'invisible': [('line_ids', '=', [])]}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>DGII Report 606 - Sales</h1>
+                        <h3>Period: <field name="date_from"/> to <field name="date_to"/></h3>
+                    </div>
+                    
+                    <group>
+                        <group name="parameters">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group name="export_options" attrs="{'invisible': [('line_ids', '=', [])]}">
+                            <field name="export_format"/>
+                            <field name="export_filename" attrs="{'invisible': [('export_filename', '=', False)]}"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Statistics -->
+                    <div class="row" attrs="{'invisible': [('line_ids', '=', [])]}">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Records</h5>
+                                    <h2 class="text-primary"><field name="total_records"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Amount</h5>
+                                    <h2 class="text-success">
+                                        <field name="total_amount" widget="monetary"/>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Report Lines -->
+                    <notebook attrs="{'invisible': [('line_ids', '=', [])]}">
+                        <page string="Report Data" name="report_data">
+                            <field name="line_ids" readonly="1">
+                                <tree>
+                                    <field name="ncf_number"/>
+                                    <field name="document_type_code"/>
+                                    <field name="invoice_date"/>
+                                    <field name="partner_name"/>
+                                    <field name="partner_vat"/>
+                                    <field name="subtotal" sum="Subtotal"/>
+                                    <field name="tax_amount" sum="Tax"/>
+                                    <field name="total_amount" sum="Total"/>
+                                    <field name="currency_code"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- DGII Report 607 Form View -->
+    <record id="view_dgii_report_607_form" model="ir.ui.view">
+        <field name="name">dgii.report.607.form</field>
+        <field name="model">dgii.report.607</field>
+        <field name="arch" type="xml">
+            <form string="DGII Report 607 - Purchases">
+                <header>
+                    <button name="action_generate_report" string="Generate Report" type="object" 
+                            class="btn-primary" attrs="{'invisible': [('line_ids', '!=', [])]}"/>
+                    <button name="action_export_report" string="Export" type="object" 
+                            class="btn-success" attrs="{'invisible': [('line_ids', '=', [])]}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>DGII Report 607 - Purchases</h1>
+                        <h3>Period: <field name="date_from"/> to <field name="date_to"/></h3>
+                    </div>
+                    
+                    <group>
+                        <group name="parameters">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group name="export_options" attrs="{'invisible': [('line_ids', '=', [])]}">
+                            <field name="export_format"/>
+                            <field name="export_filename" attrs="{'invisible': [('export_filename', '=', False)]}"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Statistics -->
+                    <div class="row" attrs="{'invisible': [('line_ids', '=', [])]}">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Records</h5>
+                                    <h2 class="text-primary"><field name="total_records"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Amount</h5>
+                                    <h2 class="text-success">
+                                        <field name="total_amount" widget="monetary"/>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Report Lines -->
+                    <notebook attrs="{'invisible': [('line_ids', '=', [])]}">
+                        <page string="Report Data" name="report_data">
+                            <field name="line_ids" readonly="1">
+                                <tree decoration-danger="not ncf_valid">
+                                    <field name="supplier_ncf"/>
+                                    <field name="ncf_valid" widget="boolean_toggle"/>
+                                    <field name="document_type_code"/>
+                                    <field name="invoice_date"/>
+                                    <field name="partner_name"/>
+                                    <field name="partner_vat"/>
+                                    <field name="subtotal" sum="Subtotal"/>
+                                    <field name="tax_amount" sum="Tax"/>
+                                    <field name="total_amount" sum="Total"/>
+                                    <field name="currency_code"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions for DGII Reports -->
+    <record id="action_dgii_report_606" model="ir.actions.act_window">
+        <field name="name">DGII Report 606 - Sales</field>
+        <field name="res_model">dgii.report.606</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_dgii_report_606_form"/>
+    </record>
+
+    <record id="action_dgii_report_607" model="ir.actions.act_window">
+        <field name="name">DGII Report 607 - Purchases</field>
+        <field name="res_model">dgii.report.607</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_dgii_report_607_form"/>
+    </record>
+
+</odoo>

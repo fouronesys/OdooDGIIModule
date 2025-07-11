@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Factura{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-file-plus text-success"></i>
+                Nueva Factura
+            </h1>
+            <a href="{{ url_for('invoices') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit"></i>
+                    Datos de la Factura
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.name.label(class="form-label") }}
+                                {{ form.name(class="form-control", placeholder="Ej: INV-001") }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.partner_name.label(class="form-label") }}
+                                {{ form.partner_name(class="form-control", placeholder="Nombre del cliente") }}
+                                {% if form.partner_name.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.partner_name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.amount_total.label(class="form-label") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ form.amount_total(class="form-control", placeholder="0") }}
+                                </div>
+                                {% if form.amount_total.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.amount_total.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.ncf_document_type.label(class="form-label") }}
+                                {{ form.ncf_document_type(class="form-select") }}
+                                {% if form.ncf_document_type.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.ncf_document_type.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">El NCF se asignará automáticamente al guardar</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('invoices') }}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Crear Factura
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Information Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle"></i>
+                    Información sobre NCF
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Tipos de Documento:</h6>
+                        <ul class="small">
+                            <li><strong>Factura de Crédito Fiscal:</strong> Para empresas con RNC</li>
+                            <li><strong>Factura de Consumo:</strong> Para consumidores finales</li>
+                            <li><strong>Nota de Crédito:</strong> Para devoluciones</li>
+                            <li><strong>Nota de Débito:</strong> Para cargos adicionales</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Asignación Automática:</h6>
+                        <ul class="small">
+                            <li>El NCF se asigna automáticamente al crear la factura</li>
+                            <li>Se utiliza la secuencia activa correspondiente al tipo</li>
+                            <li>Los números son consecutivos sin saltos</li>
+                            <li>No se puede cambiar una vez asignado</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

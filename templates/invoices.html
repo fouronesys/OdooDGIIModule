@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Facturas{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-file-invoice text-primary"></i>
+                Facturas
+            </h1>
+            <a href="{{ url_for('new_invoice') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Nueva Factura
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if invoices %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Número</th>
+                                <th>Cliente</th>
+                                <th>Monto</th>
+                                <th>Tipo NCF</th>
+                                <th>NCF Asignado</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invoice in invoices %}
+                            <tr>
+                                <td><strong>{{ invoice.name }}</strong></td>
+                                <td>{{ invoice.partner_name }}</td>
+                                <td>
+                                    <strong class="text-success">${{ "{:,.0f}".format(invoice.amount_total or 0) }}</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ invoice.ncf_document_type.replace('_', ' ').title() }}</span>
+                                </td>
+                                <td>
+                                    {% if invoice.ncf_assignment %}
+                                        <code class="text-primary">{{ invoice.ncf_assignment.ncf_number }}</code>
+                                    {% else %}
+                                        <span class="text-muted">Sin asignar</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if invoice.state == 'posted' %}
+                                        <span class="badge bg-success">Publicada</span>
+                                    {% elif invoice.state == 'draft' %}
+                                        <span class="badge bg-secondary">Borrador</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">{{ invoice.state.title() }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ invoice.invoice_date.strftime('%d/%m/%Y') if invoice.invoice_date else '-' }}</td>
+                                <td>
+                                    {% if not invoice.ncf_assignment %}
+                                        <button class="btn btn-sm btn-primary" onclick="assignNCF({{ invoice.id }})">
+                                            <i class="fas fa-barcode"></i> Asignar NCF
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-sm btn-outline-info" disabled>
+                                            <i class="fas fa-check"></i> NCF Asignado
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-file-invoice fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No hay facturas registradas</h4>
+                    <p class="text-muted">Cree su primera factura para comenzar a usar el sistema de NCF.</p>
+                    <a href="{{ url_for('new_invoice') }}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Crear Primera Factura
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function assignNCF(invoiceId) {
+    if (confirm('¿Está seguro de que desea asignar un NCF a esta factura?')) {
+        $.post('/invoices/' + invoiceId + '/assign_ncf')
+            .done(function(data) {
+                if (data.success) {
+                    alert('NCF asignado exitosamente: ' + data.ncf_number);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .fail(function(xhr) {
+                const response = JSON.parse(xhr.responseText);
+                alert('Error: ' + response.error);
+            });
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Secuencias NCF{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-list-ol text-primary"></i>
+                Secuencias NCF
+            </h1>
+            <a href="{{ url_for('new_sequence') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva Secuencia
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if sequences %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Prefijo</th>
+                                <th>Tipo de Documento</th>
+                                <th>Número Actual</th>
+                                <th>Rango</th>
+                                <th>Disponibles</th>
+                                <th>Uso</th>
+                                <th>Fecha Vencimiento</th>
+                                <th>Estado</th>
+                                <th>Alertas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sequence in sequences %}
+                            <tr class="{% if sequence.is_expiring_soon or sequence.is_low_availability %}table-warning{% elif sequence.state != 'active' %}table-secondary{% endif %}">
+                                <td>
+                                    <strong class="text-primary">{{ sequence.prefix }}</strong>
+                                </td>
+                                <td>{{ sequence.document_type.replace('_', ' ').title() }}</td>
+                                <td>
+                                    <code>{{ "%08d"|format(sequence.current_number) }}</code>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        {{ "%08d"|format(sequence.start_number) }} - {{ "%08d"|format(sequence.end_number) }}
+                                    </small>
+                                </td>
+                                <td>
+                                    <strong>{{ sequence.available_numbers }}</strong>
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar {% if sequence.percentage_used > 90 %}bg-danger{% elif sequence.percentage_used > 75 %}bg-warning{% else %}bg-success{% endif %}" 
+                                             style="width: {{ sequence.percentage_used }}%">
+                                            {{ "%.1f"|format(sequence.percentage_used) }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ sequence.expiry_date.strftime('%d/%m/%Y') }}
+                                    <br>
+                                    <small class="{% if sequence.days_to_expiry <= 30 %}text-danger{% else %}text-muted{% endif %}">
+                                        ({{ sequence.days_to_expiry }} días)
+                                    </small>
+                                </td>
+                                <td>
+                                    {% if sequence.state == 'active' %}
+                                        <span class="badge bg-success">Activa</span>
+                                    {% elif sequence.state == 'expired' %}
+                                        <span class="badge bg-danger">Vencida</span>
+                                    {% elif sequence.state == 'depleted' %}
+                                        <span class="badge bg-dark">Agotada</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactiva</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if sequence.is_expiring_soon %}
+                                        <span class="badge bg-warning mb-1">
+                                            <i class="fas fa-calendar-times"></i> Por vencer
+                                        </span>
+                                        <br>
+                                    {% endif %}
+                                    {% if sequence.is_low_availability %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-exclamation-triangle"></i> Baja disponibilidad
+                                        </span>
+                                    {% endif %}
+                                    {% if not sequence.is_expiring_soon and not sequence.is_low_availability and sequence.state == 'active' %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-list-ol fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No hay secuencias NCF configuradas</h4>
+                    <p class="text-muted">Las secuencias NCF permiten la asignación automática de números de comprobantes fiscales a sus facturas.</p>
+                    <a href="{{ url_for('new_sequence') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Crear Primera Secuencia
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if sequences %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i>
+                    Información sobre Secuencias NCF
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-check-circle text-success"></i> Secuencias Activas</h6>
+                        <p class="small text-muted">Están disponibles para asignación automática de NCF a facturas.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-exclamation-triangle text-warning"></i> Alertas</h6>
+                        <p class="small text-muted">Vencimiento próximo (≤30 días) o baja disponibilidad (≥90% usado).</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-barcode text-primary"></i> Formato NCF</h6>
+                        <p class="small text-muted">Prefijo de 3 caracteres + número de 8 dígitos (ej: B0200000001).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

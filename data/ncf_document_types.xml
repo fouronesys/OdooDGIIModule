@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Default NCF Sequence Templates for Dominican Republic -->
+        
+        <!-- Consumer Invoice Template -->
+        <record id="ncf_sequence_template_consumer" model="ncf.sequence">
+            <field name="prefix">B02</field>
+            <field name="document_type">invoice_consumer</field>
+            <field name="start_number">1</field>
+            <field name="end_number">99999999</field>
+            <field name="current_number">1</field>
+            <field name="start_date" eval="time.strftime('%Y-01-01')"/>
+            <field name="expiry_date" eval="time.strftime('%Y-12-31')"/>
+            <field name="state">inactive</field>
+        </record>
+
+        <!-- Credit Fiscal Invoice Template -->
+        <record id="ncf_sequence_template_fiscal" model="ncf.sequence">
+            <field name="prefix">E31</field>
+            <field name="document_type">invoice</field>
+            <field name="start_number">1</field>
+            <field name="end_number">99999999</field>
+            <field name="current_number">1</field>
+            <field name="start_date" eval="time.strftime('%Y-01-01')"/>
+            <field name="expiry_date" eval="time.strftime('%Y-12-31')"/>
+            <field name="state">inactive</field>
+        </record>
+
+        <!-- Credit Note Template -->
+        <record id="ncf_sequence_template_credit_note" model="ncf.sequence">
+            <field name="prefix">E43</field>
+            <field name="document_type">credit_note</field>
+            <field name="start_number">1</field>
+            <field name="end_number">99999999</field>
+            <field name="current_number">1</field>
+            <field name="start_date" eval="time.strftime('%Y-01-01')"/>
+            <field name="expiry_date" eval="time.strftime('%Y-12-31')"/>
+            <field name="state">inactive</field>
+        </record>
+
+        <!-- Debit Note Template -->
+        <record id="ncf_sequence_template_debit_note" model="ncf.sequence">
+            <field name="prefix">E44</field>
+            <field name="document_type">debit_note</field>
+            <field name="start_number">1</field>
+            <field name="end_number">99999999</field>
+            <field name="current_number">1</field>
+            <field name="start_date" eval="time.strftime('%Y-01-01')"/>
+            <field name="expiry_date" eval="time.strftime('%Y-12-31')"/>
+            <field name="state">inactive</field>
+        </record>
+
+        <!-- Cron Job for NCF Sequence Updates -->
+        <record id="ir_cron_ncf_sequence_update" model="ir.cron">
+            <field name="name">Update NCF Sequence States</field>
+            <field name="model_id" ref="model_ncf_sequence"/>
+            <field name="state">code</field>
+            <field name="code">model.update_sequence_states()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="doall" eval="False"/>
+        </record>
+
+    </data>
+</odoo>
