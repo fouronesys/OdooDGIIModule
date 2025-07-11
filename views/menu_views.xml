@@ -40,18 +40,7 @@
               parent="menu_ncf_management_root"
               sequence="80"/>
 
-    <!-- Report 606 Menu -->
-    <menuitem id="menu_dgii_report_606" 
-              name="Report 606 (Sales)" 
-              parent="menu_dgii_reports"
-              action="action_dgii_report_606"
-              sequence="10"/>
-
-    <!-- Report 607 Menu -->
-    <menuitem id="menu_dgii_report_607" 
-              name="Report 607 (Purchases)" 
-              parent="menu_dgii_reports"
-              action="action_dgii_report_607"
-              sequence="20"/>
+    <!-- Note: Report menus will be added after successful module installation -->
+    <!-- This prevents loading order issues during initial installation -->
 
 </odoo>

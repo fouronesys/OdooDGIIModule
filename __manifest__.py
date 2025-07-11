@@ -57,6 +57,7 @@ Requirements:
         # Access rights (must be loaded after models are defined)
         'security/ir.model.access.csv',
     ],
+
     'demo': [],
     'installable': True,
     'auto_install': False,

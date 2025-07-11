@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- DGII Reports Menu Items -->
+    <!-- This file contains the menu items that reference DGII report actions -->
+    <!-- Load this file after the main module is installed to avoid reference errors -->
+    
+    <!-- Report 606 Menu -->
+    <menuitem id="menu_dgii_report_606" 
+              name="Report 606 (Sales)" 
+              parent="menu_dgii_reports"
+              action="action_dgii_report_606"
+              sequence="10"/>
+
+    <!-- Report 607 Menu -->
+    <menuitem id="menu_dgii_report_607" 
+              name="Report 607 (Purchases)" 
+              parent="menu_dgii_reports"
+              action="action_dgii_report_607"
+              sequence="20"/>
+
+</odoo>
