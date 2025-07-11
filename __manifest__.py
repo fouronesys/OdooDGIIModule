@@ -39,9 +39,6 @@ Requirements:
         # Security groups (must be loaded first)
         'security/security.xml',
         
-        # Data
-        'data/ncf_document_types.xml',
-        
         # Views
         'views/ncf_sequence_views.xml',
         'views/ncf_assignment_views.xml',

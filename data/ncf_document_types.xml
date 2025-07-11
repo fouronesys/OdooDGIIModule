@@ -14,6 +14,7 @@
             <field name="start_date">2025-01-01</field>
             <field name="expiry_date">2025-12-31</field>
             <field name="state">inactive</field>
+            <field name="company_id" ref="base.main_company"/>
         </record>
 
         <!-- Credit Fiscal Invoice Template -->
@@ -26,6 +27,7 @@
             <field name="start_date">2025-01-01</field>
             <field name="expiry_date">2025-12-31</field>
             <field name="state">inactive</field>
+            <field name="company_id" ref="base.main_company"/>
         </record>
 
         <!-- Credit Note Template -->
@@ -38,6 +40,7 @@
             <field name="start_date">2025-01-01</field>
             <field name="expiry_date">2025-12-31</field>
             <field name="state">inactive</field>
+            <field name="company_id" ref="base.main_company"/>
         </record>
 
         <!-- Debit Note Template -->
@@ -50,6 +53,7 @@
             <field name="start_date">2025-01-01</field>
             <field name="expiry_date">2025-12-31</field>
             <field name="state">inactive</field>
+            <field name="company_id" ref="base.main_company"/>
         </record>
 
         <!-- Cron Job for NCF Sequence Updates -->
