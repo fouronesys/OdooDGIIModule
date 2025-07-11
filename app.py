@@ -1,51 +1,95 @@
-"""
-Flask application factory for NCF Management System
-"""
-
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFProtect
+from sqlalchemy.orm import DeclarativeBase
+from werkzeug.middleware.proxy_fix import ProxyFix
 
-# Initialize extensions
-db = SQLAlchemy()
-csrf = CSRFProtect()
+class Base(DeclarativeBase):
+    pass
 
-def create_app():
-    """Create and configure the Flask application"""
-    app = Flask(__name__)
+db = SQLAlchemy(model_class=Base)
+
+# create the app
+app = Flask(__name__)
+app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-change-in-production")
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1) # needed for url_for to generate with https
+
+# configure the database, relative to the app instance folder
+database_url = os.environ.get("DATABASE_URL")
+if not database_url:
+    # Fallback to SQLite for development if no PostgreSQL
+    database_url = "sqlite:///ncf_management.db"
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# initialize the app with the extension, flask-sqlalchemy >= 3.0.x
+db.init_app(app)
+
+# Register routes
+from routes import main_bp
+app.register_blueprint(main_bp)
+
+def init_sample_data():
+    """Initialize sample data for demonstration"""
+    from flask_models import Company, NCFSequence, Invoice
+    from datetime import datetime, timedelta
     
-    # Configuration
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+    # Create sample company
+    company = Company(
+        name='Empresa Ejemplo SRL',
+        rnc='123456789',
+        ncf_enabled=True,
+        expiry_alert_days=30,
+        low_availability_threshold=90.0
+    )
+    db.session.add(company)
+    db.session.commit()
     
-    # Database configuration
-    database_url = os.environ.get('DATABASE_URL')
-    if database_url:
-        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    else:
-        # Fallback to SQLite for development
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ncf_management.db'
+    # Create sample NCF sequences
+    sequences_data = [
+        {
+            'prefix': 'B01',
+            'document_type': 'invoice',
+            'current_number': 1,
+            'start_number': 1,
+            'end_number': 1000,
+            'start_date': datetime.now().date(),
+            'expiry_date': datetime.now().date() + timedelta(days=365),
+            'state': 'active',
+            'company_id': company.id
+        },
+        {
+            'prefix': 'B02',
+            'document_type': 'invoice_consumer',
+            'current_number': 1,
+            'start_number': 1,
+            'end_number': 500,
+            'start_date': datetime.now().date(),
+            'expiry_date': datetime.now().date() + timedelta(days=180),
+            'state': 'active',
+            'company_id': company.id
+        }
+    ]
     
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    for seq_data in sequences_data:
+        sequence = NCFSequence(**seq_data)
+        db.session.add(sequence)
     
-    # Initialize extensions
-    db.init_app(app)
-    csrf.init_app(app)
+    db.session.commit()
+
+with app.app_context():
+    # Make sure to import the models here or their tables won't be created
+    import flask_models  # noqa: F401
+    db.create_all()
     
-    # Register blueprints
-    from routes import main_bp
-    app.register_blueprint(main_bp)
-    
-    # Create tables
-    with app.app_context():
-        db.create_all()
-        
-        # Initialize sample data if needed
-        from flask_models import Company, NCFSequence, Invoice, NCFAssignment
-        if not Company.query.first():
-            init_sample_data()
-    
-    return app
+    # Initialize sample data if needed
+    from flask_models import Company
+    if not Company.query.first():
+        init_sample_data()
 
 def init_sample_data():
     """Initialize sample data for demonstration"""
