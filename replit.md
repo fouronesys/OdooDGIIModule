@@ -122,6 +122,7 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Set up PostgreSQL database and proper Flask configuration (July 11, 2025)
 - Simplified security.xml file by removing complex domain expressions that caused parsing errors
 - Resolved all XML parsing issues for successful Odoo module loading (July 11, 2025)
+- Removed multi-company functionality per user request - simplified to single company setup (July 11, 2025)
 
 ## Deployment Strategy
 

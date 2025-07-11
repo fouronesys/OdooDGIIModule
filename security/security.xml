@@ -18,32 +18,20 @@
 
     <!-- Record Rules -->
     
-    <!-- NCF Sequence Multi-Company Rule -->
-    <record id="ncf_sequence_company_rule" model="ir.rule">
-        <field name="name">NCF Sequence: multi-company</field>
+    <!-- NCF Sequence Access Rule -->
+    <record id="ncf_sequence_access_rule" model="ir.rule">
+        <field name="name">NCF Sequence: full access</field>
         <field name="model_id" ref="model_ncf_sequence"/>
-        <field name="domain_force"><![CDATA[['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]]]></field>
+        <field name="domain_force">[(1, '=', 1)]</field>
         <field name="global" eval="True"/>
     </record>
 
-    <!-- NCF Assignment Multi-Company Rule -->
-    <record id="ncf_assignment_company_rule" model="ir.rule">
-        <field name="name">NCF Assignment: multi-company</field>
+    <!-- NCF Assignment Access Rule -->
+    <record id="ncf_assignment_access_rule" model="ir.rule">
+        <field name="name">NCF Assignment: full access</field>
         <field name="model_id" ref="model_ncf_assignment"/>
-        <field name="domain_force"><![CDATA[['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]]]></field>
+        <field name="domain_force">[(1, '=', 1)]</field>
         <field name="global" eval="True"/>
-    </record>
-
-    <!-- NCF Sequence Management Restrictions -->
-    <record id="ncf_sequence_manager_rule" model="ir.rule">
-        <field name="name">NCF Sequence: managers only for critical operations</field>
-        <field name="model_id" ref="model_ncf_sequence"/>
-        <field name="domain_force">[]</field>
-        <field name="groups" eval="[(4, ref('group_ncf_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
     </record>
 
 </odoo>
