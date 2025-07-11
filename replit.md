@@ -142,6 +142,9 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Created dual-system architecture: Flask app for development/testing + complete Odoo module for production
 - Added comprehensive README.md with instructions for using both systems (July 11, 2025)
 - Cleaned up Odoo module conflicts and established clean Flask application structure
+- Fixed RPC error in menu loading by removing problematic DGII report menu references (July 11, 2025)
+- Resolved XML field reference error in DGII Report 607 views (changed ncf_number to supplier_ncf) (July 11, 2025)
+- Created final working Odoo module package: ncf_management_odoo17_final.zip (July 11, 2025)
 
 ## Deployment Strategy
 

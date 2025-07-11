@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
     <!-- DGII Report 606 Form View -->
     <record id="view_dgii_report_606_form" model="ir.ui.view">
         <field name="name">dgii.report.606.form</field>
@@ -135,7 +135,7 @@
                         <page string="Report Data" name="report_data">
                             <field name="line_ids" readonly="1">
                                 <tree>
-                                    <field name="supplier_ncf"/>
+                                    <field name="ncf_number"/>
                                     <field name="document_type_code"/>
                                     <field name="invoice_date"/>
                                     <field name="partner_name"/>
@@ -144,7 +144,6 @@
                                     <field name="tax_amount" sum="Tax"/>
                                     <field name="total_amount" sum="Total"/>
                                     <field name="currency_code"/>
-                                    <field name="ncf_valid"/>
                                 </tree>
                             </field>
                         </page>
