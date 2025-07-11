@@ -17,7 +17,24 @@
                        required="requires_ncf and state == 'draft'"
                        readonly="state != 'draft'"/>
                 <field name="ncf_number" 
-                       invisible="not requires_ncf"/>
+                       invisible="not requires_ncf"
+                       widget="char"
+                       placeholder="No NCF asignado"
+                       readonly="1"/>
+            </xpath>
+            
+            <!-- Add NCF prominently in header -->
+            <xpath expr="//div[@name='button_box']" position="before">
+                <div class="alert alert-info mb-2" invisible="not requires_ncf or not ncf_number">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>NCF:</strong> <span style="font-size: 16px; font-weight: bold; color: #0066cc;"><field name="ncf_number" nolabel="1"/></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Tipo:</strong> <field name="ncf_document_type" nolabel="1"/>
+                        </div>
+                    </div>
+                </div>
             </xpath>
             
             <!-- Add NCF action button -->
@@ -61,7 +78,8 @@
         <field name="inherit_id" ref="account.view_out_invoice_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
-                <field name="ncf_number" optional="show"/>
+                <field name="ncf_number" optional="show" string="NCF"/>
+                <field name="ncf_document_type" optional="hide" string="Tipo NCF"/>
             </xpath>
         </field>
     </record>

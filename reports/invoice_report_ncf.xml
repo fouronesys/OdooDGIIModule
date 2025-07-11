@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- NCF Invoice Report Template -->
+    <template id="report_invoice_ncf" inherit_id="account.report_invoice_document">
+        
+        <!-- Add NCF Information prominently at the top -->
+        <xpath expr="//div[@name='invoice_address']" position="before">
+            <div class="row" t-if="o.requires_ncf">
+                <div class="col-12">
+                    <div class="alert alert-info" style="background-color: #e8f4ff; border: 2px solid #0066cc; padding: 15px; margin-bottom: 20px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 style="margin: 0; color: #0066cc;">
+                                    <strong>NCF: <span t-field="o.ncf_number" style="font-size: 18px; font-weight: bold;"/></strong>
+                                </h4>
+                            </div>
+                            <div class="col-md-6">
+                                <p style="margin: 0; color: #0066cc;">
+                                    <strong>Tipo: <span t-field="o.ncf_document_type"/></strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        
+        <!-- Add NCF in header area -->
+        <xpath expr="//h2[hasclass('mt-4')]" position="after">
+            <div t-if="o.requires_ncf and o.ncf_number" class="row">
+                <div class="col-12 text-center">
+                    <div style="border: 2px solid #0066cc; padding: 10px; margin: 10px 0; background-color: #f8f9fa;">
+                        <h3 style="margin: 0; color: #0066cc;">
+                            <strong>Número de Comprobante Fiscal (NCF)</strong>
+                        </h3>
+                        <h2 style="margin: 5px 0; color: #0066cc; font-family: monospace;">
+                            <span t-field="o.ncf_number"/>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        
+        <!-- Add NCF information in the table header -->
+        <xpath expr="//table[@name='invoice_line_table']/thead/tr/th[last()]" position="after">
+            <th t-if="o.requires_ncf" class="text-right">
+                <span>NCF</span>
+            </th>
+        </xpath>
+        
+        <!-- Add NCF information in the table body -->
+        <xpath expr="//table[@name='invoice_line_table']/tbody//tr[@t-foreach='o.invoice_line_ids']/td[last()]" position="after">
+            <td t-if="o.requires_ncf" class="text-right">
+                <span t-field="o.ncf_number"/>
+            </td>
+        </xpath>
+        
+        <!-- Add NCF validation notice at the bottom -->
+        <xpath expr="//div[@id='qrcode']" position="after">
+            <div t-if="o.requires_ncf" class="row mt-4">
+                <div class="col-12">
+                    <div class="alert alert-warning" style="border-left: 4px solid #ff9800; padding: 10px;">
+                        <p><strong>Información NCF:</strong></p>
+                        <ul>
+                            <li>Este comprobante fiscal es válido únicamente con el NCF asignado</li>
+                            <li>NCF: <strong><span t-field="o.ncf_number"/></strong></li>
+                            <li>Tipo de Comprobante: <strong><span t-field="o.ncf_document_type"/></strong></li>
+                            <li>Fecha de Emisión: <strong><span t-field="o.invoice_date"/></strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        
+    </template>
+    
+    <!-- NCF Invoice Report Action -->
+    <record id="action_report_invoice_ncf" model="ir.actions.report">
+        <field name="name">Factura con NCF</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ncf_management.report_invoice_ncf</field>
+        <field name="report_file">ncf_management.report_invoice_ncf</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+    
+</odoo>
