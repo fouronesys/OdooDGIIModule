@@ -61,8 +61,8 @@
                                         <div class="progress" style="height: 6px;">
                                             <div class="progress-bar" 
                                                  t-attf-style="width: #{record.percentage_used.raw_value}%"
-                                                 t-attf-class="progress-bar #{record.percentage_used.raw_value > 90 ? 'bg-danger' : 
-                                                                               record.percentage_used.raw_value > 75 ? 'bg-warning' : 'bg-success'}"/>
+                                                 t-attf-class="progress-bar #{record.percentage_used.raw_value &gt; 90 ? 'bg-danger' : 
+                                                                               record.percentage_used.raw_value &gt; 75 ? 'bg-warning' : 'bg-success'}"/>
                                         </div>
                                         <small class="text-muted">
                                             <t t-esc="Math.round(record.percentage_used.raw_value)"/>% used
@@ -74,7 +74,7 @@
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
                                         <t t-if="record.days_to_expiry.raw_value >= 0">
-                                            <span t-attf-class="text-#{record.days_to_expiry.raw_value <= 30 ? 'danger' : 'muted'}">
+                                            <span t-attf-class="text-#{record.days_to_expiry.raw_value &lt;= 30 ? 'danger' : 'muted'}">
                                                 <i class="fa fa-calendar"/>
                                                 <t t-esc="record.days_to_expiry.raw_value"/> days
                                             </span>
