@@ -102,4 +102,22 @@
         </field>
     </record>
 
+    <!-- Action for NCF Assignments from Sequence -->
+    <record id="action_ncf_assignment_from_sequence" model="ir.actions.act_window">
+        <field name="name">NCF Assignments</field>
+        <field name="res_model">ncf.assignment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('sequence_id', '=', active_id)]</field>
+        <field name="context">{'default_sequence_id': active_id}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No NCF assignments found for this sequence!
+            </p>
+            <p>
+                NCF assignments are automatically created when invoices are posted.
+                Each assignment links an invoice to its corresponding NCF number.
+            </p>
+        </field>
+    </record>
+
 </odoo>

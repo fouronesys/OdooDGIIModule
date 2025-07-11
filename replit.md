@@ -127,6 +127,7 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Fixed XML parsing in data/ncf_document_types.xml by replacing time.strftime() calls with static dates (July 11, 2025)
 - Removed data/ncf_document_types.xml from manifest to resolve persistent parsing issues - templates can be created manually via UI (July 11, 2025)
 - Modernized XML view syntax by replacing deprecated 'attrs' attributes with modern Odoo 17 syntax in all view files (July 11, 2025)
+- Added missing action_ncf_assignment_from_sequence to resolve button reference error in NCF sequence views (July 11, 2025)
 
 ## Deployment Strategy
 
