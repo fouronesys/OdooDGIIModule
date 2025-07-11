@@ -129,6 +129,7 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Modernized XML view syntax by replacing deprecated 'attrs' attributes with modern Odoo 17 syntax in all view files (July 11, 2025)
 - Added missing action_ncf_assignment_from_sequence to resolve button reference error in NCF sequence views (July 11, 2025)
 - Fixed mail.thread inheritance in NCF models to enable chatter functionality and resolve XML view parsing (July 11, 2025)
+- Simplified all XML views to basic format for maximum compatibility and removed problematic modern syntax (July 11, 2025)
 
 ## Deployment Strategy
 

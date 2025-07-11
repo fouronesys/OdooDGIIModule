@@ -1,0 +1,374 @@
+
+Conversaciones
+Contactos
+Tableros
+Punto de venta
+Facturación
+Compra
+Inventario
+Manufactura
+Empleados
+Aplicaciones
+Ajustes
+Logo
+Aplicaciones
+Aplicaciones
+Buscar…
+1-59 / 59
+Aplicaciones
+Todos
+Aplicaciones oficiales
+Industrias
+Categorías
+Todos
+Ventas
+9
+Servicios
+4
+Contabilidad
+2
+Inventario
+4
+Manufactura
+5
+Sitio web
+5
+Marketing
+7
+Recursos humanos
+9
+Productividad
+5
+Técnico
+Administración
+2
+Themes
+Herramientas
+1
+Icono
+Custom Title and Favicon
+kolpolok_custom_title_and_favicon
+
+Icono
+POS Company Logo
+pos_brand_logo_cs
+
+Icono
+Ventas
+sale_management
+
+Icono
+Restaurante
+pos_restaurant
+
+Icono
+Facturación
+account
+
+Icono
+Hide Powered by and Manage DB Link
+hide_powered_by_and_manage_db
+
+Icono
+CRM
+crm
+
+Icono
+MRP II
+mrp_workorder
+
+Icono
+Sitio web
+website
+
+Icono
+Inventario
+stock
+
+Icono
+Contabilidad
+account_accountant
+
+Icono
+Información
+knowledge
+
+Icono
+Compra
+purchase
+
+Icono
+Punto de venta
+point_of_sale
+
+Icono
+Proyecto
+project
+
+Icono
+Comercio electrónico
+website_sale
+
+Icono
+Manufactura
+mrp
+
+Icono
+Marketing por correo electrónico
+mass_mailing
+
+Icono
+Hojas de trabajo
+timesheet_grid
+
+Icono
+Gastos
+hr_expense
+
+Icono
+Studio
+web_studio
+
+Icono
+Tiempo personal
+hr_holidays
+
+Icono
+Reclutamiento
+hr_recruitment
+
+Icono
+Servicio externo
+industry_fsm
+
+Icono
+Empleados
+hr
+
+Icono
+Bulk Product Customer Tax Updater
+bulk_product_tax_updater
+
+Icono
+Reciclaje de datos
+data_recycle
+
+Icono
+Mantenimiento
+maintenance
+
+Icono
+Firma electrónica
+sign
+
+Icono
+Soporte al cliente
+helpdesk
+
+Icono
+Suscripciones
+sale_subscription
+
+Icono
+Calidad
+quality_control
+
+Icono
+eLearning
+website_slides
+
+Icono
+Planeación
+planning
+
+Icono
+Eventos
+website_event
+
+Icono
+Conversaciones
+mail
+
+Icono
+Contactos
+contacts
+
+Icono
+Gestión del ciclo de vida del producto (PLM)
+mrp_plm
+
+Icono
+Calendario
+calendar
+
+Icono
+Marketing social
+social
+
+Icono
+Evaluaciones
+hr_appraisal
+
+Icono
+Flota
+fleet
+
+Icono
+Automatización de marketing
+marketing_automation
+
+Icono
+Chat en vivo
+im_livechat
+
+Icono
+Citas
+appointment
+
+Icono
+Encuestas
+survey
+
+Icono
+Móvil
+web_mobile
+
+Icono
+Reparación
+repair
+
+Icono
+Asistencias
+hr_attendance
+
+Icono
+Marketing por SMS
+mass_mailing_sms
+
+Icono
+Código de barras
+stock_barcode
+
+Icono
+Actividades pendientes
+project_todo
+
+Icono
+Gestión de habilidades
+hr_skills
+
+Icono
+VoIP
+voip
+
+Icono
+Almuerzo
+lunch
+
+Icono
+Empleos en línea
+website_hr_recruitment
+
+Icono
+Conector de Amazon
+sale_amazon
+
+Icono
+Conector de eBay
+sale_ebay
+
+Icono
+Contratos de empleados
+hr_contract
+
+Importar módulo
+
+Nota: solo puede importar módulos de datos (archivos .xml y activos estáticos)
+
+Archivo del módulo (.zip)?
+129 kB
+Forzar inicio?
+
+Cargar datos de prueba?
+
+Operación no válida
+
+Error al importar el módulo 'OdooDGIIModule-main'.
+
+ while parsing /tmp/tmp8iu9dxxl/OdooDGIIModule-main/views/ncf_sequence_views.xml:5, somewhere inside
+<record id="view_ncf_sequence_form" model="ir.ui.view">
+        <field name="name">ncf.sequence.form</field>
+        <field name="model">ncf.sequence</field>
+        <field name="arch" type="xml">
+            <form string="NCF Sequence">
+                <header>
+                    <button name="action_reactivate" string="Reactivate" type="object" class="btn-primary" invisible="state != 'inactive'"/>
+                    <button name="action_deactivate" string="Deactivate" type="object" class="btn-secondary" invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,inactive,expired,depleted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_ncf_assignment_from_sequence)d" type="action" class="oe_stat_button" icon="fa-list">
+                            <field name="used_numbers" widget="statinfo" string="Used"/>
+                        </button>
+                    </div>
+                    
+                    <!-- Alert banners -->
+                    <div class="alert alert-warning" role="alert" invisible="not is_expiring_soon">
+                        <strong>Warning:</strong> This NCF sequence will expire in 
+                        <field name="days_to_expiry"/> days.
+                    </div>
+                    
+                    <div class="alert alert-danger" role="alert" invisible="not is_low_availability">
+                        <strong>Alert:</strong> This NCF sequence has low availability 
+                        (<field name="percentage_used" widget="percentage"/> used).
+                    </div>
+                    
+                    <group>
+                        <group name="basic_info">
+                            <field name="prefix" readonly="state in ['expired', 'depleted']"/>
+                            <field name="document_type" readonly="state in ['expired', 'depleted']"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group name="sequence_info">
+                            <field name="current_number" readonly="state in ['expired', 'depleted']"/>
+                            <field name="start_number" readonly="state in ['expired', 'depleted']"/>
+                            <field name="end_number" readonly="state in ['expired', 'depleted']"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="dates">
+                            <field name="start_date" readonly="state in ['expired', 'depleted']"/>
+                            <field name="expiry_date" readonly="state in ['expired', 'depleted']"/>
+                        </group>
+                        <group name="statistics">
+                            <field name="available_numbers"/>
+                            <field name="percentage_used" widget="percentage"/>
+                            <field name="days_to_expiry"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="NCF Assignments" name="assignments">
+                            <field name="assignment_ids" readonly="1">
+                                <tree>
+                                    <field name="ncf_number"/>
+                                    <field name="invoice_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="invoice_amount" sum="Total"/>
+                                    <field name="assignment_date"/>
+                                    <field name="invoice_state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record> 
