@@ -11,8 +11,8 @@
             <field name="start_number">1</field>
             <field name="end_number">99999999</field>
             <field name="current_number">1</field>
-            <field name="start_date" eval="time.strftime('%Y-01-01')"/>
-            <field name="expiry_date" eval="time.strftime('%Y-12-31')"/>
+            <field name="start_date">2025-01-01</field>
+            <field name="expiry_date">2025-12-31</field>
             <field name="state">inactive</field>
         </record>
 
@@ -23,8 +23,8 @@
             <field name="start_number">1</field>
             <field name="end_number">99999999</field>
             <field name="current_number">1</field>
-            <field name="start_date" eval="time.strftime('%Y-01-01')"/>
-            <field name="expiry_date" eval="time.strftime('%Y-12-31')"/>
+            <field name="start_date">2025-01-01</field>
+            <field name="expiry_date">2025-12-31</field>
             <field name="state">inactive</field>
         </record>
 
@@ -35,8 +35,8 @@
             <field name="start_number">1</field>
             <field name="end_number">99999999</field>
             <field name="current_number">1</field>
-            <field name="start_date" eval="time.strftime('%Y-01-01')"/>
-            <field name="expiry_date" eval="time.strftime('%Y-12-31')"/>
+            <field name="start_date">2025-01-01</field>
+            <field name="expiry_date">2025-12-31</field>
             <field name="state">inactive</field>
         </record>
 
@@ -47,8 +47,8 @@
             <field name="start_number">1</field>
             <field name="end_number">99999999</field>
             <field name="current_number">1</field>
-            <field name="start_date" eval="time.strftime('%Y-01-01')"/>
-            <field name="expiry_date" eval="time.strftime('%Y-12-31')"/>
+            <field name="start_date">2025-01-01</field>
+            <field name="expiry_date">2025-12-31</field>
             <field name="state">inactive</field>
         </record>
 

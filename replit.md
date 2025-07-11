@@ -124,6 +124,7 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Resolved all XML parsing issues for successful Odoo module loading (July 11, 2025)
 - Removed multi-company functionality per user request - simplified to single company setup (July 11, 2025)
 - Removed all record rules from security.xml to eliminate XML parsing issues - access control now handled by group permissions only (July 11, 2025)
+- Fixed XML parsing in data/ncf_document_types.xml by replacing time.strftime() calls with static dates (July 11, 2025)
 
 ## Deployment Strategy
 
