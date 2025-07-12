@@ -41,20 +41,16 @@ class AccountMove(models.Model):
     
     requires_ncf = fields.Boolean(
         string='Requiere NCF',
-        compute='_compute_requires_ncf',
-        store=True,
-        readonly=False,
+        default=lambda self: self._default_requires_ncf(),
         help='Indica si esta factura requiere un Número de Comprobante Fiscal'
     )
     
-    @api.depends('move_type', 'company_id', 'partner_id')
-    def _compute_requires_ncf(self):
-        """Determine if this invoice requires NCF."""
-        for move in self:
-            move.requires_ncf = (
-                move.move_type in ['out_invoice', 'out_refund'] and
-                move.company_id.ncf_enabled
-            )
+    def _default_requires_ncf(self):
+        """Default value for requires_ncf field."""
+        return (
+            self.move_type in ['out_invoice', 'out_refund'] and
+            self.company_id.ncf_enabled
+        )
     
     @api.depends('ncf_assignment_id', 'ncf_assignment_id.ncf_number')
     def _compute_ncf_number(self):
@@ -65,16 +61,16 @@ class AccountMove(models.Model):
             else:
                 move.ncf_number = False
     
-    @api.onchange('ncf_document_type')
+    @api.onchange('ncf_document_type', 'requires_ncf')
     def _onchange_ncf_document_type(self):
         """Auto-assign NCF when document type is selected."""
-        if self.ncf_document_type and self.company_id and self.requires_ncf:
+        if self.ncf_document_type and self.company_id and self.requires_ncf and self.state == 'draft':
             # Try to prepare NCF assignment
             result = self._assign_ncf_onchange()
             if result:
                 return result
-        elif not self.ncf_document_type:
-            # Clear NCF fields if no document type selected
+        elif not self.ncf_document_type or not self.requires_ncf:
+            # Clear NCF fields if no document type selected or NCF not required
             self.ncf_assignment_id = False
             self.ncf_number = False
     
@@ -110,7 +106,20 @@ class AccountMove(models.Model):
             if self.ncf_assignment_id:
                 return
             
-            # Get next NCF number and create assignment immediately
+            # For new records (not yet saved), just preview the number
+            if not self.id:
+                next_number = sequence.current_number
+                ncf_number = f"{sequence.prefix}{str(next_number).zfill(8)}"
+                self.ncf_number = ncf_number
+                
+                return {
+                    'warning': {
+                        'title': _('NCF Preparado'),
+                        'message': _('NCF %s preparado. Se asignará al guardar el registro.') % ncf_number
+                    }
+                }
+            
+            # For existing records, create assignment immediately
             try:
                 ncf_number = sequence.get_next_ncf()
                 
@@ -255,6 +264,7 @@ class AccountMove(models.Model):
                 record._assign_ncf()
             except Exception as e:
                 _logger.warning(f"Could not auto-assign NCF during creation: {str(e)}")
+                # Don't fail the creation, just log the warning
         
         return record
     

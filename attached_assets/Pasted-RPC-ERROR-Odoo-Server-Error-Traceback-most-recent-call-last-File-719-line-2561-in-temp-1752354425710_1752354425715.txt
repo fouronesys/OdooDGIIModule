@@ -1,0 +1,49 @@
+RPC_ERROR
+Odoo Server Error
+Traceback (most recent call last):
+  File "<719>", line 2561, in template_719
+  File "<719>", line 2543, in template_719_content
+  File "<719>", line 362, in template_719_t_call_0
+KeyError: 'o'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/odoo/addons/web/controllers/report.py", line 113, in report_download
+    response = self.report_routes(reportname, docids=docids, converter=converter, context=context)
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 778, in route_wrapper
+    result = endpoint(self, *args, **params_ok)
+  File "/usr/lib/python3/dist-packages/odoo/addons/web/controllers/report.py", line 42, in report_routes
+    pdf = report.with_context(context)._render_qweb_pdf(reportname, docids, data=data)[0]
+  File "/usr/lib/python3/dist-packages/odoo/addons/account/models/ir_actions_report.py", line 58, in _render_qweb_pdf
+    return super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
+  File "/usr/lib/python3/dist-packages/odoo/addons/base/models/ir_actions_report.py", line 922, in _render_qweb_pdf
+    collected_streams = self._render_qweb_pdf_prepare_streams(report_ref, data, res_ids=res_ids)
+  File "/usr/lib/python3/dist-packages/odoo/addons/account_edi_ubl_cii/models/ir_actions_report.py", line 11, in _render_qweb_pdf_prepare_streams
+    collected_streams = super()._render_qweb_pdf_prepare_streams(report_ref, data, res_ids)
+  File "/usr/lib/python3/dist-packages/odoo/addons/account/models/ir_actions_report.py", line 17, in _render_qweb_pdf_prepare_streams
+    return super()._render_qweb_pdf_prepare_streams(report_ref, data, res_ids=res_ids)
+  File "/usr/lib/python3/dist-packages/odoo/addons/base/models/ir_actions_report.py", line 772, in _render_qweb_pdf_prepare_streams
+    html = self.with_context(**additional_context)._render_qweb_html(report_ref, all_res_ids_wo_stream, data=data)[0]
+  File "/usr/lib/python3/dist-packages/odoo/addons/base/models/ir_actions_report.py", line 997, in _render_qweb_html
+    return self._render_template(report.report_name, data), 'html'
+  File "/usr/lib/python3/dist-packages/odoo/addons/base/models/ir_actions_report.py", line 686, in _render_template
+    return view_obj._render_template(template, values).encode()
+  File "/usr/lib/python3/dist-packages/odoo/addons/base/models/ir_ui_view.py", line 2061, in _render_template
+    return self.env['ir.qweb']._render(template, values)
+  File "/usr/lib/python3/dist-packages/odoo/tools/profiler.py", line 301, in _tracked_method_render
+    return method_render(self, template, values, **options)
+  File "/usr/lib/python3/dist-packages/odoo/addons/base/models/ir_qweb.py", line 605, in _render
+    result = ''.join(rendering)
+  File "<719>", line 2567, in template_719
+odoo.addons.base.models.ir_qweb.QWebException: Error while render the template
+KeyError: 'o'
+Template: account.report_invoice_document
+Path: /t/t/t[2]
+Node: <t t-set="forced_vat" t-value="o.fiscal_position_id.foreign_vat"/>
+
+The above server error caused the following client error:
+RPC_ERROR: Odoo Server Error
+    RPC_ERROR
+        at makeErrorFromResponse (https://huevosnana.sp.weppa.dev/web/assets/f0e6003/web.assets_web.min.js:2946:163)
+        at decoder.onload (https://huevosnana.sp.weppa.dev/web/assets/f0e6003/web.assets_web.min.js:2932:7)
