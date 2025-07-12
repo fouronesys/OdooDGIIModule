@@ -102,12 +102,6 @@
         </field>
     </record>
 
-    <!-- Update menu to use wizard action -->
-    <record id="menu_ncf_sequences" model="ir.ui.menu">
-        <field name="name">Secuencias NCF</field>
-        <field name="action" ref="action_ncf_sequence_with_wizard"/>
-        <field name="parent_id" ref="menu_ncf_root"/>
-        <field name="sequence">10</field>
-    </record>
+    <!-- This menu is defined in views/menu_views.xml to avoid conflicts -->
 
 </odoo>

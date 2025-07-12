@@ -24,7 +24,7 @@
     <menuitem id="menu_ncf_sequences" 
               name="NCF Sequences" 
               parent="menu_ncf_configuration"
-              action="action_ncf_sequence"
+              action="action_ncf_sequence_with_wizard"
               sequence="10"/>
 
     <!-- NCF Assignments Menu -->
