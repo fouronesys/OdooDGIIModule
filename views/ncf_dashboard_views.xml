@@ -47,7 +47,7 @@
                                         <div class="col-6">
                                             <span class="text-muted">Current:</span>
                                             <br/>
-                                            <strong t-esc="String(record.current_number.raw_value).padStart(8, '0')"/>
+                                            <strong t-esc="record.current_number.raw_value"/>
                                         </div>
                                         <div class="col-6">
                                             <span class="text-muted">Available:</span>
@@ -64,7 +64,7 @@
                                                                                record.percentage_used.raw_value &gt; 75 ? 'bg-warning' : 'bg-success'}"/>
                                         </div>
                                         <small class="text-muted">
-                                            <t t-esc="Math.round(record.percentage_used.raw_value)"/>% used
+                                            <t t-esc="record.percentage_used.raw_value"/>% used
                                         </small>
                                     </div>
                                 </div>
