@@ -43,6 +43,7 @@ Requirements:
         'views/ncf_sequence_views.xml',
         'views/ncf_assignment_views.xml',
         'views/account_move_views.xml',
+        'views/ncf_invoice_form.xml',
         'views/ncf_dashboard_views.xml',
         
         # Wizards

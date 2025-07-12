@@ -126,6 +126,10 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Updated NCF fields in invoice form: Enhanced account_move_views.xml to show "Tipo de NCF" and "Número NCF" fields prominently in invoice forms (July 11, 2025)
 - Improved field labels: Changed NCF field labels to Spanish ("Tipo de NCF", "Número NCF", "Requiere NCF") for better user experience (July 11, 2025)
 - Created updated module package: ncf_management_odoo17_updated.zip with improved NCF form fields (July 11, 2025)
+- Created custom invoice form: Added ncf_invoice_form.xml with dedicated invoice form that prominently displays NCF fields (July 11, 2025)
+- Enhanced NCF visibility: NCF Type and NCF Number fields now appear in highlighted section with custom styling and help text (July 11, 2025)
+- Added custom menu: "Facturas con NCF" menu item provides direct access to invoice form with NCF fields always visible (July 11, 2025)
+- Final package created: ncf_management_odoo17_with_custom_form.zip includes all enhancements and custom form (July 11, 2025)
 
 ## Deployment Strategy
 
