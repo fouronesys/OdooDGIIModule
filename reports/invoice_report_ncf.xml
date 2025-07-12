@@ -4,23 +4,16 @@
     <!-- NCF Invoice Report Template -->
     <template id="report_invoice_ncf" inherit_id="account.report_invoice_document">
         
-        <!-- Add NCF prominently in header -->
-        <xpath expr="//div[hasclass('page')]//h2" position="after">
+        <!-- Add NCF prominently after invoice title -->
+        <xpath expr="//h2" position="after">
             <div t-if="o.requires_ncf and o.ncf_number" class="text-center mb-3"
                  style="border: 2px solid #28a745; padding: 10px; background-color: #f8f9fa; font-size: 16px;">
-                <strong style="color: #28a745;">🏛️ NCF (Número de Comprobante Fiscal): </strong>
+                <strong style="color: #28a745;">NCF (Número de Comprobante Fiscal): </strong>
                 <span t-field="o.ncf_number" style="font-weight: bold; font-size: 18px; color: #000;"/>
                 <br/>
                 <small style="color: #6c757d;">
                     Tipo: <span t-field="o.ncf_document_type"/>
                 </small>
-            </div>
-        </xpath>
-        
-        <!-- Also add NCF in address section for visibility -->
-        <xpath expr="//div[@name='company_address']" position="after">
-            <div t-if="o.requires_ncf and o.ncf_number" class="mb-2">
-                <strong>NCF: </strong><span t-field="o.ncf_number" style="font-weight: bold;"/>
             </div>
         </xpath>
         
