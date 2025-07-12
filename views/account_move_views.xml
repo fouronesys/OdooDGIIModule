@@ -41,11 +41,13 @@
                        invisible="move_type not in ['out_invoice', 'out_refund']"
                        required="requires_ncf and state == 'draft'"
                        readonly="state != 'draft'"
+                       style="border: 2px solid #007bff; padding: 5px; background-color: #f8f9fa;"
                        help="Selecciona el tipo de comprobante fiscal según DGII"/>
                 <field name="ncf_number" 
                        string="Número NCF"
                        invisible="move_type not in ['out_invoice', 'out_refund']"
                        readonly="1"
+                       style="border: 2px solid #28a745; padding: 5px; background-color: #f8f9fa; font-weight: bold;"
                        help="Número de Comprobante Fiscal asignado automáticamente"/>
             </xpath>
         </field>
@@ -66,11 +68,13 @@
                        invisible="move_type not in ['out_invoice', 'out_refund']"
                        required="requires_ncf and state == 'draft'"
                        readonly="state != 'draft'"
+                       style="border: 2px solid #007bff; padding: 5px; background-color: #f8f9fa;"
                        help="Tipo de Número de Comprobante Fiscal según DGII"/>
                 <field name="ncf_number" 
                        string="Número NCF"
                        invisible="move_type not in ['out_invoice', 'out_refund']"
                        readonly="1"
+                       style="border: 2px solid #28a745; padding: 5px; background-color: #f8f9fa; font-weight: bold;"
                        help="Número de Comprobante Fiscal asignado a esta factura"/>
             </xpath>
         </field>

@@ -24,8 +24,8 @@
         <field name="name">Factura con NCF</field>
         <field name="model">account.move</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">ncf_management.report_invoice_ncf</field>
-        <field name="report_file">ncf_management.report_invoice_ncf</field>
+        <field name="report_name">account.report_invoice_document</field>
+        <field name="report_file">account.report_invoice_document</field>
         <field name="binding_model_id" ref="account.model_account_move"/>
         <field name="binding_type">report</field>
     </record>
