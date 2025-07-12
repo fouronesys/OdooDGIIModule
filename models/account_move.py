@@ -52,9 +52,7 @@ class AccountMove(models.Model):
         for move in self:
             move.requires_ncf = (
                 move.move_type in ['out_invoice', 'out_refund'] and
-                move.company_id.ncf_enabled and
-                move.partner_id and
-                move.partner_id.country_id.code == 'DO'
+                move.company_id.ncf_enabled
             )
     
     @api.depends('ncf_assignment_id', 'ncf_assignment_id.ncf_number')

@@ -9,10 +9,10 @@
             <div t-if="o.requires_ncf and o.ncf_number" class="text-center mb-3"
                  style="border: 2px solid #28a745; padding: 10px; background-color: #f8f9fa; font-size: 16px;">
                 <strong style="color: #28a745;">NCF (Número de Comprobante Fiscal): </strong>
-                <span t-field="o.ncf_number" style="font-weight: bold; font-size: 18px; color: #000;"/>
+                <span t-esc="o.ncf_number" style="font-weight: bold; font-size: 18px; color: #000;"/>
                 <br/>
                 <small style="color: #6c757d;">
-                    Tipo: <span t-field="o.ncf_document_type"/>
+                    Tipo: <span t-esc="dict(o._fields['ncf_document_type'].selection)[o.ncf_document_type] if o.ncf_document_type else ''"/>
                 </small>
             </div>
         </xpath>

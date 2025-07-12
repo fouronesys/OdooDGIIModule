@@ -1,84 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Custom Invoice Form View with NCF fields -->
-    <record id="view_move_form_ncf_custom" model="ir.ui.view">
-        <field name="name">account.move.form.ncf.custom</field>
+    <!-- Single NCF Invoice Form View -->
+    <record id="view_move_form_ncf" model="ir.ui.view">
+        <field name="name">account.move.form.ncf</field>
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
-            <!-- Add NCF action buttons -->
-            <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="action_assign_ncf" type="object" 
-                        class="oe_stat_button" icon="fa-barcode"
-                        invisible="not requires_ncf or ncf_assignment_id or move_type not in ['out_invoice', 'out_refund']"
-                        help="Asignar NCF manualmente">
-                    <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_text">Asignar</span>
-                        <span class="o_stat_text">NCF</span>
-                    </div>
-                </button>
-                
-                <button name="action_view_ncf_assignment" type="object" 
-                        class="oe_stat_button" icon="fa-check-circle"
-                        invisible="not ncf_assignment_id"
-                        help="Ver detalles de asignación NCF">
-                    <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_value">
-                            <field name="ncf_number"/>
-                        </span>
-                        <span class="o_stat_text">NCF Asignado</span>
-                    </div>
-                </button>
-            </xpath>
-            
-            <!-- Add NCF fields after partner -->
+            <!-- Add NCF fields prominently after partner -->
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="requires_ncf" invisible="1"/>
                 <field name="ncf_assignment_id" invisible="1"/>
-                <field name="ncf_document_type" 
-                       string="Tipo de NCF"
-                       invisible="move_type not in ['out_invoice', 'out_refund']"
-                       required="requires_ncf and state == 'draft'"
-                       readonly="state != 'draft'"
-                       style="border: 2px solid #007bff; padding: 5px; background-color: #f8f9fa;"
-                       help="Selecciona el tipo de comprobante fiscal según DGII"/>
-                <field name="ncf_number" 
-                       string="Número NCF"
-                       invisible="move_type not in ['out_invoice', 'out_refund']"
-                       readonly="1"
-                       style="border: 2px solid #28a745; padding: 5px; background-color: #f8f9fa; font-weight: bold;"
-                       help="Número de Comprobante Fiscal asignado automáticamente"/>
+                
+                <!-- NCF Section with clear styling -->
+                <div class="row" invisible="move_type not in ['out_invoice', 'out_refund']">
+                    <div class="col-12">
+                        <div class="alert alert-info mb-3" style="border: 2px solid #17a2b8; background-color: #d1ecf1;">
+                            <h5>Información NCF (Número de Comprobante Fiscal)</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <field name="ncf_document_type" 
+                                           string="Tipo de NCF"
+                                           required="requires_ncf and state == 'draft'"
+                                           readonly="state != 'draft'"
+                                           help="Selecciona el tipo de comprobante fiscal según DGII"/>
+                                </div>
+                                <div class="col-6">
+                                    <field name="ncf_number" 
+                                           string="Número NCF"
+                                           readonly="1"
+                                           style="font-weight: bold; font-size: 14px; color: #28a745;"
+                                           help="Número de Comprobante Fiscal asignado automáticamente"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </xpath>
         </field>
     </record>
 
-    <!-- Alternative simpler inheritance for better compatibility -->
-    <record id="view_move_form_inherit_ncf_simple" model="ir.ui.view">
-        <field name="name">account.move.form.inherit.ncf.simple</field>
-        <field name="model">account.move</field>
-        <field name="inherit_id" ref="account.view_move_form"/>
-        <field name="arch" type="xml">
-            <!-- Add NCF fields after partner -->
-            <xpath expr="//field[@name='partner_id']" position="after">
-                <field name="requires_ncf" invisible="1"/>
-                <field name="ncf_assignment_id" invisible="1"/>
-                <field name="ncf_document_type" 
-                       string="Tipo de NCF"
-                       invisible="move_type not in ['out_invoice', 'out_refund']"
-                       required="requires_ncf and state == 'draft'"
-                       readonly="state != 'draft'"
-                       style="border: 2px solid #007bff; padding: 5px; background-color: #f8f9fa;"
-                       help="Tipo de Número de Comprobante Fiscal según DGII"/>
-                <field name="ncf_number" 
-                       string="Número NCF"
-                       invisible="move_type not in ['out_invoice', 'out_refund']"
-                       readonly="1"
-                       style="border: 2px solid #28a745; padding: 5px; background-color: #f8f9fa; font-weight: bold;"
-                       help="Número de Comprobante Fiscal asignado a esta factura"/>
-            </xpath>
-        </field>
-    </record>
+
 
     <!-- Inherit Invoice Tree View to add NCF column -->
     <record id="view_out_invoice_tree_inherit_ncf" model="ir.ui.view">
