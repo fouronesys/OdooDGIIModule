@@ -74,6 +74,10 @@
             <xpath expr="//tree" position="attributes">
                 <attribute name="create">false</attribute>
             </xpath>
+            <xpath expr="//tree" position="inside">
+                <button name="%(action_ncf_sequence_wizard)d" string="Create NCF Sequence" 
+                        type="action" class="btn-primary" icon="fa-plus"/>
+            </xpath>
         </field>
     </record>
 
@@ -82,6 +86,7 @@
         <field name="name">NCF Sequences</field>
         <field name="res_model">ncf.sequence</field>
         <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_ncf_sequence_tree_with_wizard"/>
         <field name="context">{
             'search_default_active': 1,
             'create_action': 'ncf_management.action_ncf_sequence_wizard'
@@ -95,9 +100,7 @@
                 to your invoices. Each sequence has a prefix and number range with expiry dates.
             </p>
             <p>
-                <a href="#" class="btn btn-primary" data-action="ncf_management.action_ncf_sequence_wizard">
-                    Create NCF Sequence
-                </a>
+                Use the "Create NCF Sequence" button in the toolbar above to add new sequences.
             </p>
         </field>
     </record>
