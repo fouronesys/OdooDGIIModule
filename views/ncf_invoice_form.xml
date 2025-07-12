@@ -65,7 +65,7 @@
         <field name="name">Facturas de Cliente con NCF</field>
         <field name="res_model">account.move</field>
         <field name="view_mode">tree,kanban,form</field>
-        <field name="view_id" ref="view_invoice_form_ncf_enhanced"/>
+        <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('account.view_out_invoice_tree')}), (0, 0, {'view_mode': 'form', 'view_id': ref('view_invoice_form_ncf_enhanced')})]"/>
         <field name="domain">[('move_type', '=', 'out_invoice')]</field>
         <field name="context">{'default_move_type': 'out_invoice', 'move_type': 'out_invoice', 'journal_type': 'sale'}</field>
         <field name="help" type="html">
@@ -78,12 +78,5 @@
             </p>
         </field>
     </record>
-    
-    <!-- Menu item for NCF invoices -->
-    <menuitem id="menu_action_move_out_invoice_type_ncf"
-              name="Facturas con NCF"
-              action="action_move_out_invoice_type_ncf"
-              parent="account.menu_finance_receivables"
-              sequence="1"/>
 
 </odoo>
