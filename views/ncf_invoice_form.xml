@@ -12,28 +12,38 @@
                 <group name="ncf_info_group" string="🏛️ INFORMACIÓN NCF - DGII" 
                        invisible="move_type not in ['out_invoice', 'out_refund']"
                        style="border: 3px solid #28a745; background-color: #f8f9fa; padding: 10px; margin: 10px 0;">
-                    <field name="requires_ncf" invisible="1"/>
                     <field name="ncf_assignment_id" invisible="1"/>
-                    <field name="ncf_document_type" 
-                           string="🏛️ Tipo de NCF"
-                           widget="selection"
-                           required="requires_ncf and state == 'draft'"
-                           readonly="state != 'draft'"
-                           help="Tipo de Número de Comprobante Fiscal según DGII"
-                           style="font-weight: bold; font-size: 14px;"/>
-                    <field name="ncf_number" 
-                           string="🏛️ Número NCF"
-                           readonly="1"
-                           help="Número de Comprobante Fiscal asignado automáticamente"
-                           style="font-weight: bold; font-size: 14px; color: #28a745;"/>
-                    <div class="alert alert-success" invisible="not ncf_number" style="margin: 5px 0;">
-                        <i class="fa fa-check-circle"/> 
-                        <strong>NCF asignado correctamente</strong>
-                    </div>
-                    <div class="alert alert-info" invisible="ncf_number or not requires_ncf" style="margin: 5px 0;">
-                        <i class="fa fa-info-circle"/> 
-                        <strong>Seleccione el tipo de NCF para asignación automática</strong>
-                    </div>
+                    <group col="4">
+                        <field name="requires_ncf" 
+                               string="🏛️ Requiere NCF"
+                               widget="boolean_toggle"
+                               help="Indica si esta factura requiere Número de Comprobante Fiscal"/>
+                        <field name="ncf_document_type" 
+                               string="🏛️ Tipo de NCF"
+                               widget="selection"
+                               required="requires_ncf and state == 'draft'"
+                               readonly="state != 'draft'"
+                               invisible="not requires_ncf"
+                               help="Tipo de Número de Comprobante Fiscal según DGII"/>
+                        <field name="ncf_number" 
+                               string="🏛️ Número NCF"
+                               readonly="1"
+                               invisible="not requires_ncf"
+                               style="font-weight: bold; font-size: 16px; color: #28a745;"
+                               help="Número de Comprobante Fiscal asignado automáticamente"/>
+                        <div invisible="not requires_ncf or ncf_number" style="grid-column: span 4;">
+                            <div class="alert alert-info" style="margin: 5px 0;">
+                                <i class="fa fa-info-circle"/> 
+                                <strong>Seleccione el tipo de NCF para asignación automática</strong>
+                            </div>
+                        </div>
+                        <div invisible="not ncf_number" style="grid-column: span 4;">
+                            <div class="alert alert-success" style="margin: 5px 0;">
+                                <i class="fa fa-check-circle"/> 
+                                <strong>NCF asignado correctamente</strong>
+                            </div>
+                        </div>
+                    </group>
                 </group>
             </xpath>
             
@@ -41,7 +51,7 @@
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_assign_ncf" type="object" 
                         class="oe_stat_button" icon="fa-barcode"
-                        invisible="not requires_ncf or ncf_assignment_id or move_type not in ['out_invoice', 'out_refund']"
+                        invisible="not requires_ncf or ncf_assignment_id or move_type not in ['out_invoice', 'out_refund'] or state != 'draft'"
                         help="Asignar NCF manualmente">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Asignar</span>

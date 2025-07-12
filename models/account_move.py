@@ -43,6 +43,7 @@ class AccountMove(models.Model):
         string='Requiere NCF',
         compute='_compute_requires_ncf',
         store=True,
+        readonly=False,
         help='Indica si esta factura requiere un Número de Comprobante Fiscal'
     )
     
@@ -105,19 +106,45 @@ class AccountMove(models.Model):
                     }
                 }
             
-            # Get next NCF number
-            next_number = sequence.current_number
-            ncf_number = f"{sequence.prefix}{str(next_number).zfill(8)}"
+            # If we already have an assignment, don't create a new one
+            if self.ncf_assignment_id:
+                return
             
-            # Display the number that will be assigned
-            self.ncf_number = ncf_number
-            
-            return {
-                'warning': {
-                    'title': _('NCF Preparado'),
-                    'message': _('NCF %s preparado para asignación. Guarde el registro para confirmar.') % ncf_number
+            # Get next NCF number and create assignment immediately
+            try:
+                ncf_number = sequence.get_next_ncf()
+                
+                # Create NCF assignment
+                NCFAssignment = self.env['ncf.assignment']
+                assignment = NCFAssignment.create({
+                    'ncf_number': ncf_number,
+                    'sequence_id': sequence.id,
+                    'invoice_id': self.id,
+                    'company_id': self.company_id.id,
+                })
+                
+                # Link assignment to invoice
+                self.ncf_assignment_id = assignment.id
+                
+                return {
+                    'warning': {
+                        'title': _('NCF Asignado'),
+                        'message': _('NCF %s asignado correctamente.') % ncf_number
+                    }
                 }
-            }
+            except Exception as e:
+                # If we can't create the assignment, just preview the number
+                next_number = sequence.current_number
+                ncf_number = f"{sequence.prefix}{str(next_number).zfill(8)}"
+                self.ncf_number = ncf_number
+                
+                return {
+                    'warning': {
+                        'title': _('NCF Preparado'),
+                        'message': _('NCF %s preparado. Se asignará al guardar el registro.') % ncf_number
+                    }
+                }
+                
         except Exception as e:
             return {
                 'warning': {
