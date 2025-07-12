@@ -163,22 +163,51 @@ class AccountMove(models.Model):
                 'No active NCF sequence found for document type "%s".'
             ) % dict(self._fields['ncf_document_type'].selection)[self.ncf_document_type])
         
-        # Get next NCF number
-        ncf_number = sequence.get_next_ncf()
+        # Get next NCF number (but don't update sequence yet - wait for save)
+        next_number = sequence.current_number
+        if next_number > sequence.end_number:
+            raise UserError(_('NCF sequence %s has been exhausted.') % sequence.prefix)
         
-        # Create NCF assignment
-        NCFAssignment = self.env['ncf.assignment']
-        assignment = NCFAssignment.create({
-            'ncf_number': ncf_number,
-            'sequence_id': sequence.id,
-            'invoice_id': self.id,
-            'company_id': self.company_id.id,
-        })
+        # Format NCF number (prefix + 8-digit number)
+        ncf_number = f"{sequence.prefix}{str(next_number).zfill(8)}"
         
-        # Link assignment to invoice
-        self.ncf_assignment_id = assignment.id
+        # For onchange, we'll simulate the assignment without actually creating records
+        # The real assignment will happen when the record is saved
+        self.ncf_number = ncf_number
         
-        _logger.info(f"NCF {ncf_number} assigned to invoice {self.name} via onchange")
+        _logger.info(f"NCF {ncf_number} prepared for assignment to invoice {self.name or 'new'} via onchange")
+    
+    @api.model
+    def create(self, vals):
+        """Override create to handle NCF assignment."""
+        # Create the record first
+        record = super(AccountMove, self).create(vals)
+        
+        # Handle NCF assignment if needed
+        if (record.requires_ncf and record.ncf_document_type and 
+            not record.ncf_assignment_id and record.state == 'draft'):
+            try:
+                record._assign_ncf()
+            except Exception as e:
+                _logger.warning(f"Could not auto-assign NCF during creation: {str(e)}")
+        
+        return record
+    
+    def write(self, vals):
+        """Override write to handle NCF assignment."""
+        result = super(AccountMove, self).write(vals)
+        
+        # Handle NCF assignment if document type changed
+        if 'ncf_document_type' in vals:
+            for record in self:
+                if (record.requires_ncf and record.ncf_document_type and 
+                    not record.ncf_assignment_id and record.state == 'draft'):
+                    try:
+                        record._assign_ncf()
+                    except Exception as e:
+                        _logger.warning(f"Could not auto-assign NCF during write: {str(e)}")
+        
+        return result
     
     def action_post(self):
         """Override to auto-assign NCF on posting."""

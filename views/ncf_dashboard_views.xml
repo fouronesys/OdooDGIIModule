@@ -35,7 +35,7 @@
                                             <span t-attf-class="badge #{record.state.raw_value == 'active' ? 'badge-success' : 
                                                                        record.state.raw_value == 'expired' ? 'badge-danger' : 
                                                                        record.state.raw_value == 'depleted' ? 'badge-dark' : 'badge-warning'}">
-                                                <t t-esc="record.state.raw_value.title()"/>
+                                                <t t-esc="record.state.raw_value"/>
                                             </span>
                                         </div>
                                     </div>
