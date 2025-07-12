@@ -11,7 +11,7 @@
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_assign_ncf" type="object" 
                         class="oe_stat_button" icon="fa-barcode"
-                        attrs="{'invisible': ['|', '|', ('requires_ncf', '=', False), ('ncf_assignment_id', '!=', False), ('move_type', 'not in', ['out_invoice', 'out_refund'])]}"
+                        invisible="not requires_ncf or ncf_assignment_id or move_type not in ['out_invoice', 'out_refund']"
                         help="Asignar NCF manualmente">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Asignar</span>
@@ -21,7 +21,7 @@
                 
                 <button name="action_view_ncf_assignment" type="object" 
                         class="oe_stat_button" icon="fa-check-circle"
-                        attrs="{'invisible': [('ncf_assignment_id', '=', False)]}"
+                        invisible="not ncf_assignment_id"
                         help="Ver detalles de asignación NCF">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_value">
@@ -38,11 +38,13 @@
                 <field name="ncf_assignment_id" invisible="1"/>
                 <field name="ncf_document_type" 
                        string="Tipo de NCF"
-                       attrs="{'invisible': [('move_type', 'not in', ['out_invoice', 'out_refund'])], 'required': [('requires_ncf', '=', True), ('state', '=', 'draft')], 'readonly': [('state', '!=', 'draft')]}"
+                       invisible="move_type not in ['out_invoice', 'out_refund']"
+                       required="requires_ncf and state == 'draft'"
+                       readonly="state != 'draft'"
                        help="Selecciona el tipo de comprobante fiscal según DGII"/>
                 <field name="ncf_number" 
                        string="Número NCF"
-                       attrs="{'invisible': [('move_type', 'not in', ['out_invoice', 'out_refund'])]}"
+                       invisible="move_type not in ['out_invoice', 'out_refund']"
                        readonly="1"
                        help="Número de Comprobante Fiscal asignado automáticamente"/>
             </xpath>
@@ -61,11 +63,13 @@
                 <field name="ncf_assignment_id" invisible="1"/>
                 <field name="ncf_document_type" 
                        string="Tipo de NCF"
-                       attrs="{'invisible': [('move_type', 'not in', ['out_invoice', 'out_refund'])], 'required': [('requires_ncf', '=', True), ('state', '=', 'draft')], 'readonly': [('state', '!=', 'draft')]}"
+                       invisible="move_type not in ['out_invoice', 'out_refund']"
+                       required="requires_ncf and state == 'draft'"
+                       readonly="state != 'draft'"
                        help="Tipo de Número de Comprobante Fiscal según DGII"/>
                 <field name="ncf_number" 
                        string="Número NCF"
-                       attrs="{'invisible': [('move_type', 'not in', ['out_invoice', 'out_refund'])]}"
+                       invisible="move_type not in ['out_invoice', 'out_refund']"
                        readonly="1"
                        help="Número de Comprobante Fiscal asignado a esta factura"/>
             </xpath>
