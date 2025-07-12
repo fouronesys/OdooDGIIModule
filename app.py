@@ -11,7 +11,7 @@ db = SQLAlchemy(model_class=Base)
 
 # create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-change-in-production")
+app.secret_key = os.environ.get("SESSION_SECRET")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1) # needed for url_for to generate with https
 
 # configure the database, relative to the app instance folder
@@ -37,63 +37,7 @@ csrf = CSRFProtect(app)
 from routes import main_bp
 app.register_blueprint(main_bp)
 
-def init_sample_data():
-    """Initialize sample data for demonstration"""
-    from flask_models import Company, NCFSequence, Invoice
-    from datetime import datetime, timedelta
-    
-    # Create sample company
-    company = Company(
-        name='Empresa Ejemplo SRL',
-        rnc='123456789',
-        ncf_enabled=True,
-        expiry_alert_days=30,
-        low_availability_threshold=90.0
-    )
-    db.session.add(company)
-    db.session.commit()
-    
-    # Create sample NCF sequences
-    sequences_data = [
-        {
-            'prefix': 'B01',
-            'document_type': 'invoice',
-            'current_number': 1,
-            'start_number': 1,
-            'end_number': 1000,
-            'start_date': datetime.now().date(),
-            'expiry_date': datetime.now().date() + timedelta(days=365),
-            'state': 'active',
-            'company_id': company.id
-        },
-        {
-            'prefix': 'B02',
-            'document_type': 'invoice_consumer',
-            'current_number': 1,
-            'start_number': 1,
-            'end_number': 500,
-            'start_date': datetime.now().date(),
-            'expiry_date': datetime.now().date() + timedelta(days=180),
-            'state': 'active',
-            'company_id': company.id
-        }
-    ]
-    
-    for seq_data in sequences_data:
-        sequence = NCFSequence(**seq_data)
-        db.session.add(sequence)
-    
-    db.session.commit()
 
-with app.app_context():
-    # Make sure to import the models here or their tables won't be created
-    import flask_models  # noqa: F401
-    db.create_all()
-    
-    # Initialize sample data if needed
-    from flask_models import Company
-    if not Company.query.first():
-        init_sample_data()
 
 def init_sample_data():
     """Initialize sample data for demonstration"""
@@ -210,3 +154,13 @@ def init_sample_data():
     
     db.session.commit()
     print("Sample data initialized successfully!")
+
+with app.app_context():
+    # Make sure to import the models here or their tables won't be created
+    import flask_models  # noqa: F401
+    db.create_all()
+    
+    # Initialize sample data if needed
+    from flask_models import Company
+    if not Company.query.first():
+        init_sample_data()
