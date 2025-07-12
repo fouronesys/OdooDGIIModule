@@ -1,126 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Custom Invoice Form View with NCF Integration -->
+    <!-- Enhanced Invoice Form View with prominent NCF fields -->
     <record id="view_invoice_form_ncf_enhanced" model="ir.ui.view">
         <field name="name">account.move.form.ncf.enhanced</field>
         <field name="model">account.move</field>
-        <field name="priority">99</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="priority">20</field>
         <field name="arch" type="xml">
-            <form string="Factura con NCF">
-                <header>
-                    <button name="action_post" string="Confirmar" type="object" 
-                            class="oe_highlight" invisible="state != 'draft'"
-                            data-hotkey="v"/>
-                    <button name="action_assign_ncf" string="Asignar NCF" type="object"
-                            class="btn-secondary" 
-                            invisible="not requires_ncf or ncf_assignment_id or state != 'draft'"
-                            help="Asignar NCF manualmente"/>
-                    <button name="button_draft" string="Restablecer a borrador" type="object"
-                            invisible="state not in ['posted']" 
-                            groups="account.group_account_invoice"/>
-                    <button name="button_cancel" string="Cancelar" type="object"
-                            invisible="state not in ['draft', 'posted']"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
-                </header>
-                
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="action_view_ncf_assignment" type="object" 
-                                class="oe_stat_button" icon="fa-barcode"
-                                invisible="not ncf_assignment_id"
-                                help="Ver detalles de asignación NCF">
-                            <field name="ncf_number" widget="statinfo" string="NCF"/>
-                        </button>
+            <!-- Add NCF section prominently after partner -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <group name="ncf_info_group" string="🏛️ INFORMACIÓN NCF - DGII" 
+                       invisible="move_type not in ['out_invoice', 'out_refund']"
+                       style="border: 3px solid #28a745; background-color: #f8f9fa; padding: 10px; margin: 10px 0;">
+                    <field name="requires_ncf" invisible="1"/>
+                    <field name="ncf_assignment_id" invisible="1"/>
+                    <field name="ncf_document_type" 
+                           string="🏛️ Tipo de NCF"
+                           widget="selection"
+                           required="requires_ncf and state == 'draft'"
+                           readonly="state != 'draft'"
+                           help="Tipo de Número de Comprobante Fiscal según DGII"
+                           style="font-weight: bold; font-size: 14px;"/>
+                    <field name="ncf_number" 
+                           string="🏛️ Número NCF"
+                           readonly="1"
+                           help="Número de Comprobante Fiscal asignado automáticamente"
+                           style="font-weight: bold; font-size: 14px; color: #28a745;"/>
+                    <div class="alert alert-info" invisible="not requires_ncf" style="margin: 5px 0;">
+                        <i class="fa fa-info-circle"/> 
+                        <strong>El NCF se asignará automáticamente al confirmar la factura</strong>
                     </div>
-                    
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Borrador" readonly="state != 'draft'"/>
-                        </h1>
+                </group>
+            </xpath>
+            
+            <!-- Add NCF button in button box -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_assign_ncf" type="object" 
+                        class="oe_stat_button" icon="fa-barcode"
+                        invisible="not requires_ncf or ncf_assignment_id or move_type not in ['out_invoice', 'out_refund']"
+                        help="Asignar NCF manualmente">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Asignar</span>
+                        <span class="o_stat_text">NCF</span>
                     </div>
-                    
-                    <group>
-                        <group name="invoice_header_left">
-                            <field name="partner_id" string="Cliente" 
-                                   domain="[('supplier_rank', '=', 0), ('customer_rank', '>', 0)]"
-                                   context="{'search_default_customer': 1, 'show_address': 1}"
-                                   options='{"always_reload": True}'/>
-                            <field name="invoice_date" string="Fecha de factura"/>
-                            <field name="currency_id" groups="base.group_multi_currency"/>
-                            <field name="company_id" invisible="1"/>
-                            <field name="move_type" invisible="1"/>
-                        </group>
-                        
-                        <group name="ncf_information" string="Información NCF">
-                            <field name="requires_ncf" invisible="1"/>
-                            <field name="ncf_assignment_id" invisible="1"/>
-                            <field name="ncf_document_type" 
-                                   string="Tipo de NCF"
-                                   widget="selection"
-                                   required="requires_ncf and state == 'draft'"
-                                   readonly="state != 'draft'"
-                                   help="Tipo de Número de Comprobante Fiscal según DGII"
-                                   style="background-color: #f0f8ff; border: 2px solid #4CAF50;"/>
-                            <field name="ncf_number" 
-                                   string="Número NCF"
-                                   readonly="1"
-                                   help="Número de Comprobante Fiscal asignado automáticamente"
-                                   style="background-color: #f0f8ff; font-weight: bold;"/>
-                            <div class="alert alert-info" invisible="not requires_ncf" style="margin: 5px 0;">
-                                <i class="fa fa-info-circle"/> 
-                                El NCF se asignará automáticamente al confirmar la factura
-                            </div>
-                        </group>
-                    </group>
-                    
-                    <notebook>
-                        <page string="Líneas de factura" name="invoice_tab">
-                            <field name="invoice_line_ids" widget="section_and_note_one2many" 
-                                   mode="tree,kanban" context="{'default_move_type': move_type}">
-                                <tree string="Líneas de factura" editable="bottom">
-                                    <field name="product_id" optional="show"/>
-                                    <field name="name" widget="section_and_note_text" optional="show"/>
-                                    <field name="account_id" optional="hide" 
-                                           groups="account.group_account_readonly"/>
-                                    <field name="quantity" optional="show"/>
-                                    <field name="product_uom_id" optional="hide" 
-                                           groups="uom.group_uom"/>
-                                    <field name="price_unit" optional="show"/>
-                                    <field name="tax_ids" widget="many2many_tags" optional="show"/>
-                                    <field name="price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
-                                    <field name="price_total" groups="account.group_show_line_subtotals_tax_included"/>
-                                </tree>
-                            </field>
-                            
-                            <group class="oe_subtotal_footer oe_right">
-                                <field name="tax_totals" widget="account-tax-totals-field" 
-                                       nolabel="1" colspan="2" readonly="1"/>
-                            </group>
-                        </page>
-                        
-                        <page string="Información adicional" name="other_tab">
-                            <group>
-                                <group name="sale_info_group" string="Información de venta">
-                                    <field name="ref" string="Referencia del cliente"/>
-                                    <field name="payment_reference" string="Referencia de pago"/>
-                                    <field name="invoice_origin" string="Documento origen"/>
-                                </group>
-                                
-                                <group name="accounting_info_group" string="Información contable">
-                                    <field name="journal_id" groups="account.group_account_readonly"/>
-                                    <field name="to_check" groups="account.group_account_readonly"/>
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
+                </button>
                 
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
+                <button name="action_view_ncf_assignment" type="object" 
+                        class="oe_stat_button" icon="fa-check-circle"
+                        invisible="not ncf_assignment_id"
+                        help="Ver detalles de asignación NCF">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="ncf_number"/>
+                        </span>
+                        <span class="o_stat_text">NCF Asignado</span>
+                    </div>
+                </button>
+            </xpath>
         </field>
     </record>
 
