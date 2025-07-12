@@ -130,6 +130,9 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Enhanced NCF visibility: NCF Type and NCF Number fields now appear in highlighted section with custom styling and help text (July 11, 2025)
 - Added custom menu: "Facturas con NCF" menu item provides direct access to invoice form with NCF fields always visible (July 11, 2025)
 - Final package created: ncf_management_odoo17_with_custom_form.zip includes all enhancements and custom form (July 11, 2025)
+- Fixed dashboard Kanban view error: Removed py.eval reference causing OwlError (July 12, 2025)
+- Corrected Create NCF Sequence button: Now properly linked to wizard action (July 12, 2025)
+- Verified NCF assignment workflow: Auto-assignment on invoice posting with manual fallback (July 12, 2025)
 
 ## Deployment Strategy
 
