@@ -19,8 +19,8 @@ class AccountMove(models.Model):
     )
     
     ncf_number = fields.Char(
-        related='ncf_assignment_id.ncf_number',
         string='Número NCF',
+        compute='_compute_ncf_number',
         store=True,
         readonly=True,
         help='Número de Comprobante Fiscal asignado a esta factura'
@@ -57,35 +57,82 @@ class AccountMove(models.Model):
                 move.partner_id.country_id.code == 'DO'
             )
     
+    @api.depends('ncf_assignment_id', 'ncf_assignment_id.ncf_number')
+    def _compute_ncf_number(self):
+        """Compute NCF number from assignment."""
+        for move in self:
+            if move.ncf_assignment_id:
+                move.ncf_number = move.ncf_assignment_id.ncf_number
+            else:
+                move.ncf_number = False
+    
     @api.onchange('ncf_document_type')
     def _onchange_ncf_document_type(self):
         """Auto-assign NCF when document type is selected."""
-        if self.ncf_document_type:
+        if self.ncf_document_type and self.company_id:
             # Clear existing assignment if document type doesn't match
             if self.ncf_assignment_id and self.ncf_assignment_id.document_type != self.ncf_document_type:
                 self.ncf_assignment_id = False
             
             # Auto-assign NCF if requirements are met
-            if (self.requires_ncf and not self.ncf_assignment_id and 
-                self.state == 'draft' and self.company_id and self.partner_id):
+            if not self.ncf_assignment_id:
                 try:
-                    self._assign_ncf_onchange()
-                    return {
-                        'warning': {
-                            'title': _('NCF Asignado'),
-                            'message': _('NCF %s asignado automáticamente para tipo "%s"') % (
-                                self.ncf_number,
-                                dict(self._fields['ncf_document_type'].selection)[self.ncf_document_type]
-                            )
+                    # Find active sequence for the document type
+                    NCFSequence = self.env['ncf.sequence']
+                    sequence = NCFSequence.search([
+                        ('document_type', '=', self.ncf_document_type),
+                        ('company_id', '=', self.company_id.id),
+                        ('state', '=', 'active'),
+                    ], limit=1)
+                    
+                    if sequence:
+                        # Get next NCF number
+                        next_number = sequence.current_number
+                        if next_number <= sequence.end_number:
+                            # Format NCF number (prefix + 8-digit number)
+                            ncf_number = f"{sequence.prefix}{str(next_number).zfill(8)}"
+                            
+                            # Create a temporary assignment to show in the form
+                            NCFAssignment = self.env['ncf.assignment']
+                            temp_assignment = NCFAssignment.new({
+                                'ncf_number': ncf_number,
+                                'sequence_id': sequence.id,
+                                'company_id': self.company_id.id,
+                            })
+                            
+                            # Set the assignment (this will trigger compute of ncf_number)
+                            self.ncf_assignment_id = temp_assignment
+                            
+                            return {
+                                'warning': {
+                                    'title': _('NCF Preparado'),
+                                    'message': _('NCF %s preparado para asignación. Guarde el registro para confirmar.') % ncf_number
+                                }
+                            }
+                        else:
+                            return {
+                                'warning': {
+                                    'title': _('Secuencia Agotada'),
+                                    'message': _('La secuencia NCF %s está agotada. Cree una nueva secuencia.') % sequence.prefix
+                                }
+                            }
+                    else:
+                        return {
+                            'warning': {
+                                'title': _('Sin Secuencia'),
+                                'message': _('No hay secuencia activa para el tipo "%s". Cree una secuencia primero.') % dict(self._fields['ncf_document_type'].selection)[self.ncf_document_type]
+                            }
                         }
-                    }
                 except Exception as e:
                     return {
                         'warning': {
-                            'title': _('No se pudo asignar NCF'),
-                            'message': _('Error: %s. Use el botón "Asignar NCF" después de guardar.') % str(e)
+                            'title': _('Error'),
+                            'message': _('Error al preparar NCF: %s') % str(e)
                         }
                     }
+        else:
+            # Clear NCF fields if no document type selected
+            self.ncf_assignment_id = False
     
     def action_assign_ncf(self):
         """Manually assign NCF to invoice."""
@@ -160,7 +207,7 @@ class AccountMove(models.Model):
         
         if not sequence:
             raise UserError(_(
-                'No active NCF sequence found for document type "%s".'
+                'No active NCF sequence found for document type "%s". Please create a sequence first.'
             ) % dict(self._fields['ncf_document_type'].selection)[self.ncf_document_type])
         
         # Get next NCF number (but don't update sequence yet - wait for save)
@@ -171,8 +218,7 @@ class AccountMove(models.Model):
         # Format NCF number (prefix + 8-digit number)
         ncf_number = f"{sequence.prefix}{str(next_number).zfill(8)}"
         
-        # For onchange, we'll simulate the assignment without actually creating records
-        # The real assignment will happen when the record is saved
+        # For onchange, we'll show the NCF number in the form immediately
         self.ncf_number = ncf_number
         
         _logger.info(f"NCF {ncf_number} prepared for assignment to invoice {self.name or 'new'} via onchange")
