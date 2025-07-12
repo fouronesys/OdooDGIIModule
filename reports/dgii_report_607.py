@@ -2,9 +2,11 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from datetime import datetime
 import base64
 import csv
 import io
+import xlsxwriter
 
 
 class DGIIReport607(models.TransientModel):
@@ -40,8 +42,9 @@ class DGIIReport607(models.TransientModel):
     
     # Export Fields
     export_format = fields.Selection([
+        ('txt', 'TXT File (DGII Format)'),
+        ('xlsx', 'Excel File (XLSX)'),
         ('csv', 'CSV File'),
-        ('txt', 'TXT File'),
     ], string='Export Format', default='txt')
     
     export_file = fields.Binary(
@@ -170,8 +173,13 @@ class DGIIReport607(models.TransientModel):
         """Get DGII document type code for purchases."""
         mapping = {
             'invoice': '01',  # Purchase invoice
-            'credit_note': '03',  # Purchase credit note
-            'debit_note': '02',  # Purchase debit note
+            'credit_note': '02',  # Credit note
+            'debit_note': '03',  # Debit note
+            'informal': '04',  # Informal receipt
+            'unique': '11',  # Unique income receipt
+            'minor_expenses': '12',  # Minor expenses receipt
+            'exterior': '13',  # Exterior operations receipt
+            'payments': '14',  # Payments receipt
         }
         return mapping.get(document_type, '01')
     
@@ -184,6 +192,8 @@ class DGIIReport607(models.TransientModel):
         
         if self.export_format == 'csv':
             content, filename = self._export_csv()
+        elif self.export_format == 'xlsx':
+            content, filename = self._export_xlsx()
         else:  # txt
             content, filename = self._export_txt()
         
@@ -192,6 +202,150 @@ class DGIIReport607(models.TransientModel):
             'export_filename': filename,
         })
         
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content?model=dgii.report.607&id={self.id}&field=export_file&download=true&filename={filename}',
+            'target': 'self',
+        }
+    
+    def _export_csv(self):
+        """Export to CSV format."""
+        output = io.StringIO()
+        writer = csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+        
+        # Header
+        writer.writerow([
+            'NCF Proveedor',
+            'Tipo Doc',
+            'Fecha',
+            'Proveedor',
+            'RNC Proveedor',
+            'Subtotal',
+            'Impuesto',
+            'Total',
+            'Moneda',
+            'NCF Válido'
+        ])
+        
+        # Data rows
+        for line in self.line_ids:
+            writer.writerow([
+                line.supplier_ncf,
+                line.document_type_code,
+                line.invoice_date.strftime('%d/%m/%Y'),
+                line.partner_name,
+                line.partner_vat,
+                f"{line.subtotal:.2f}",
+                f"{line.tax_amount:.2f}",
+                f"{line.total_amount:.2f}",
+                line.currency_code,
+                'Sí' if line.ncf_valid else 'No'
+            ])
+        
+        content = output.getvalue().encode('utf-8')
+        filename = f'DGII_607_{self.date_from.strftime("%Y%m")}_{self.company_id.dgii_rnc or "SIN_RNC"}.csv'
+        
+        return content, filename
+    
+    def _export_txt(self):
+        """Export to TXT format (DGII standard)."""
+        lines = []
+        
+        for line in self.line_ids:
+            # Format according to DGII specifications for 607
+            # Fields: RNC|Tipo|NCF_Proveedor|Fecha|Proveedor|RNC_Proveedor|Subtotal|Impuesto|Total
+            dgii_line = "|".join([
+                self.company_id.dgii_rnc or "",
+                line.document_type_code,
+                line.supplier_ncf,
+                line.invoice_date.strftime('%d/%m/%Y'),
+                line.partner_name.replace("|", " "),
+                line.partner_vat or "",
+                f"{line.subtotal:.2f}",
+                f"{line.tax_amount:.2f}",
+                f"{line.total_amount:.2f}",
+            ])
+            lines.append(dgii_line)
+        
+        content = "\n".join(lines).encode('utf-8')
+        filename = f'DGII_607_{self.date_from.strftime("%Y%m")}_{self.company_id.dgii_rnc or "SIN_RNC"}.txt'
+        
+        return content, filename
+    
+    def _export_xlsx(self):
+        """Export to Excel format."""
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet('Reporte 607')
+        
+        # Define formats
+        header_format = workbook.add_format({
+            'bold': True,
+            'bg_color': '#D9EDF7',
+            'font_color': '#31708F',
+            'border': 1
+        })
+        
+        money_format = workbook.add_format({
+            'num_format': '#,##0.00',
+            'border': 1
+        })
+        
+        text_format = workbook.add_format({
+            'border': 1
+        })
+        
+        date_format = workbook.add_format({
+            'num_format': 'dd/mm/yyyy',
+            'border': 1
+        })
+        
+        # Headers
+        headers = [
+            'NCF Proveedor',
+            'Tipo Documento',
+            'Fecha Factura',
+            'Proveedor',
+            'RNC Proveedor',
+            'Subtotal',
+            'Impuesto',
+            'Total',
+            'Moneda',
+            'NCF Válido'
+        ]
+        
+        for col, header in enumerate(headers):
+            worksheet.write(0, col, header, header_format)
+        
+        # Data rows
+        for row, line in enumerate(self.line_ids, 1):
+            worksheet.write(row, 0, line.supplier_ncf, text_format)
+            worksheet.write(row, 1, line.document_type_code, text_format)
+            worksheet.write(row, 2, line.invoice_date, date_format)
+            worksheet.write(row, 3, line.partner_name, text_format)
+            worksheet.write(row, 4, line.partner_vat, text_format)
+            worksheet.write(row, 5, line.subtotal, money_format)
+            worksheet.write(row, 6, line.tax_amount, money_format)
+            worksheet.write(row, 7, line.total_amount, money_format)
+            worksheet.write(row, 8, line.currency_code, text_format)
+            worksheet.write(row, 9, 'Sí' if line.ncf_valid else 'No', text_format)
+        
+        # Auto-adjust column widths
+        for col in range(len(headers)):
+            worksheet.set_column(col, col, 15)
+        
+        # Add totals row
+        total_row = len(self.line_ids) + 2
+        worksheet.write(total_row, 4, 'TOTALES:', header_format)
+        worksheet.write(total_row, 5, f'=SUM(F2:F{len(self.line_ids)+1})', money_format)
+        worksheet.write(total_row, 6, f'=SUM(G2:G{len(self.line_ids)+1})', money_format)
+        worksheet.write(total_row, 7, f'=SUM(H2:H{len(self.line_ids)+1})', money_format)
+        
+        workbook.close()
+        content = output.getvalue()
+        filename = f'DGII_607_{self.date_from.strftime("%Y%m")}_{self.company_id.dgii_rnc or "SIN_RNC"}.xlsx'
+        
+        return content, filename
         return {
             'type': 'ir.actions.act_url',
             'url': f'/web/content?model=dgii.report.607&id={self.id}&field=export_file&download=true&filename={filename}',

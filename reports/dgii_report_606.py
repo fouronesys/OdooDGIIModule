@@ -6,6 +6,7 @@ from datetime import datetime
 import base64
 import csv
 import io
+import xlsxwriter
 
 
 class DGIIReport606(models.TransientModel):
@@ -41,8 +42,9 @@ class DGIIReport606(models.TransientModel):
     
     # Export Fields
     export_format = fields.Selection([
+        ('txt', 'TXT File (DGII Format)'),
+        ('xlsx', 'Excel File (XLSX)'),
         ('csv', 'CSV File'),
-        ('txt', 'TXT File'),
     ], string='Export Format', default='txt')
     
     export_file = fields.Binary(
@@ -164,6 +166,8 @@ class DGIIReport606(models.TransientModel):
         
         if self.export_format == 'csv':
             content, filename = self._export_csv()
+        elif self.export_format == 'xlsx':
+            content, filename = self._export_xlsx()
         else:  # txt
             content, filename = self._export_txt()
         
@@ -221,20 +225,95 @@ class DGIIReport606(models.TransientModel):
         
         for line in self.line_ids:
             # Format according to DGII specifications
-            record = (
-                f"{line.ncf_number:<11}"
-                f"{line.document_type_code:<2}"
-                f"{line.invoice_date.strftime('%d%m%Y'):<8}"
-                f"{line.partner_vat:<11}"
-                f"{line.partner_name[:50]:<50}"
-                f"{int(line.subtotal * 100):>12}"
-                f"{int(line.tax_amount * 100):>12}"
-                f"{int(line.total_amount * 100):>12}"
-            )
-            lines.append(record)
+            # Fields: RNC|Tipo|NCF|Fecha|Cliente|RNC_Cliente|Subtotal|Impuesto|Total
+            dgii_line = "|".join([
+                self.company_id.dgii_rnc or "",
+                line.document_type_code,
+                line.ncf_number,
+                line.invoice_date.strftime('%d/%m/%Y'),
+                line.partner_name.replace("|", " "),
+                line.partner_vat or "",
+                f"{line.subtotal:.2f}",
+                f"{line.tax_amount:.2f}",
+                f"{line.total_amount:.2f}",
+            ])
+            lines.append(dgii_line)
         
-        content = '\n'.join(lines).encode('utf-8')
-        filename = f'606{self.date_from.strftime("%Y%m")}{self.company_id.dgii_rnc or "00000000000"}.txt'
+        content = "\n".join(lines).encode('utf-8')
+        filename = f'DGII_606_{self.date_from.strftime("%Y%m")}_{self.company_id.dgii_rnc or "SIN_RNC"}.txt'
+        
+        return content, filename
+    
+    def _export_xlsx(self):
+        """Export to Excel format."""
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet('Reporte 606')
+        
+        # Define formats
+        header_format = workbook.add_format({
+            'bold': True,
+            'bg_color': '#D9EDF7',
+            'font_color': '#31708F',
+            'border': 1
+        })
+        
+        money_format = workbook.add_format({
+            'num_format': '#,##0.00',
+            'border': 1
+        })
+        
+        text_format = workbook.add_format({
+            'border': 1
+        })
+        
+        date_format = workbook.add_format({
+            'num_format': 'dd/mm/yyyy',
+            'border': 1
+        })
+        
+        # Headers
+        headers = [
+            'NCF',
+            'Tipo Documento',
+            'Fecha Factura',
+            'Cliente',
+            'RNC/Cédula',
+            'Subtotal',
+            'Impuesto',
+            'Total',
+            'Moneda'
+        ]
+        
+        for col, header in enumerate(headers):
+            worksheet.write(0, col, header, header_format)
+        
+        # Data rows
+        for row, line in enumerate(self.line_ids, 1):
+            worksheet.write(row, 0, line.ncf_number, text_format)
+            worksheet.write(row, 1, line.document_type_code, text_format)
+            worksheet.write(row, 2, line.invoice_date, date_format)
+            worksheet.write(row, 3, line.partner_name, text_format)
+            worksheet.write(row, 4, line.partner_vat, text_format)
+            worksheet.write(row, 5, line.subtotal, money_format)
+            worksheet.write(row, 6, line.tax_amount, money_format)
+            worksheet.write(row, 7, line.total_amount, money_format)
+            worksheet.write(row, 8, line.currency_code, text_format)
+        
+        # Auto-adjust column widths
+        for col in range(len(headers)):
+            worksheet.set_column(col, col, 15)
+        
+        # Add totals row
+        total_row = len(self.line_ids) + 2
+        worksheet.write(total_row, 4, 'TOTALES:', header_format)
+        worksheet.write(total_row, 5, f'=SUM(F2:F{len(self.line_ids)+1})', money_format)
+        worksheet.write(total_row, 6, f'=SUM(G2:G{len(self.line_ids)+1})', money_format)
+        worksheet.write(total_row, 7, f'=SUM(H2:H{len(self.line_ids)+1})', money_format)
+        
+        workbook.close()
+        content = output.getvalue()
+        filename = f'DGII_606_{self.date_from.strftime("%Y%m")}_{self.company_id.dgii_rnc or "SIN_RNC"}.xlsx'
         
         return content, filename
 
