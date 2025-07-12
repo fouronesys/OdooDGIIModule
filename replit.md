@@ -152,6 +152,8 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Improved NCF assignment: Enhanced onchange logic to display NCF number immediately when document type is selected (July 12, 2025)
 - Created final package: ncf_management_odoo17_final.zip with all fixes including visible NCF fields and working reports (July 12, 2025)
 - Successfully migrated from Replit Agent to standard Replit environment (July 12, 2025)
+- Fixed CSRF token configuration for Flask application security (July 12, 2025)
+- Verified NCF assignment logic: prefixes are properly combined with sequences, current_number auto-increments (July 12, 2025)
 - Fixed XPath error in invoice report template: Simplified XPath expression to avoid localization issues (July 12, 2025)
 - Created fixed Odoo module package: ncf_management_odoo17_fixed.zip with corrected invoice report (July 12, 2025)
 - Configured PostgreSQL database with proper environment variables and security (July 12, 2025)
