@@ -59,17 +59,33 @@ class AccountMove(models.Model):
     
     @api.onchange('ncf_document_type')
     def _onchange_ncf_document_type(self):
-        """Clear NCF assignment when document type changes."""
-        if self.ncf_document_type and self.ncf_assignment_id:
-            # Check if document type matches sequence
-            if self.ncf_assignment_id.document_type != self.ncf_document_type:
+        """Auto-assign NCF when document type is selected."""
+        if self.ncf_document_type:
+            # Clear existing assignment if document type doesn't match
+            if self.ncf_assignment_id and self.ncf_assignment_id.document_type != self.ncf_document_type:
                 self.ncf_assignment_id = False
-                return {
-                    'warning': {
-                        'title': _('NCF Assignment Cleared'),
-                        'message': _('The NCF assignment has been cleared because the document type changed.')
+            
+            # Auto-assign NCF if requirements are met
+            if (self.requires_ncf and not self.ncf_assignment_id and 
+                self.state == 'draft' and self.company_id and self.partner_id):
+                try:
+                    self._assign_ncf_onchange()
+                    return {
+                        'warning': {
+                            'title': _('NCF Asignado'),
+                            'message': _('NCF %s asignado automáticamente para tipo "%s"') % (
+                                self.ncf_number,
+                                dict(self._fields['ncf_document_type'].selection)[self.ncf_document_type]
+                            )
+                        }
                     }
-                }
+                except Exception as e:
+                    return {
+                        'warning': {
+                            'title': _('No se pudo asignar NCF'),
+                            'message': _('Error: %s. Use el botón "Asignar NCF" después de guardar.') % str(e)
+                        }
+                    }
     
     def action_assign_ncf(self):
         """Manually assign NCF to invoice."""
@@ -129,6 +145,40 @@ class AccountMove(models.Model):
         except Exception as e:
             _logger.error(f"Error assigning NCF to invoice {self.name}: {str(e)}")
             raise UserError(_('Error assigning NCF: %s') % str(e))
+    
+    def _assign_ncf_onchange(self):
+        """Internal method to assign NCF during onchange (less strict validation)."""
+        self.ensure_one()
+        
+        # Find active sequence for the document type
+        NCFSequence = self.env['ncf.sequence']
+        sequence = NCFSequence.search([
+            ('document_type', '=', self.ncf_document_type),
+            ('company_id', '=', self.company_id.id),
+            ('state', '=', 'active'),
+        ], limit=1)
+        
+        if not sequence:
+            raise UserError(_(
+                'No active NCF sequence found for document type "%s".'
+            ) % dict(self._fields['ncf_document_type'].selection)[self.ncf_document_type])
+        
+        # Get next NCF number
+        ncf_number = sequence.get_next_ncf()
+        
+        # Create NCF assignment
+        NCFAssignment = self.env['ncf.assignment']
+        assignment = NCFAssignment.create({
+            'ncf_number': ncf_number,
+            'sequence_id': sequence.id,
+            'invoice_id': self.id,
+            'company_id': self.company_id.id,
+        })
+        
+        # Link assignment to invoice
+        self.ncf_assignment_id = assignment.id
+        
+        _logger.info(f"NCF {ncf_number} assigned to invoice {self.name} via onchange")
     
     def action_post(self):
         """Override to auto-assign NCF on posting."""

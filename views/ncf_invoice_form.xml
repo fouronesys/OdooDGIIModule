@@ -26,9 +26,13 @@
                            readonly="1"
                            help="Número de Comprobante Fiscal asignado automáticamente"
                            style="font-weight: bold; font-size: 14px; color: #28a745;"/>
-                    <div class="alert alert-info" invisible="not requires_ncf" style="margin: 5px 0;">
+                    <div class="alert alert-success" invisible="not ncf_number" style="margin: 5px 0;">
+                        <i class="fa fa-check-circle"/> 
+                        <strong>NCF asignado correctamente</strong>
+                    </div>
+                    <div class="alert alert-info" invisible="ncf_number or not requires_ncf" style="margin: 5px 0;">
                         <i class="fa fa-info-circle"/> 
-                        <strong>El NCF se asignará automáticamente al confirmar la factura</strong>
+                        <strong>Seleccione el tipo de NCF para asignación automática</strong>
                     </div>
                 </group>
             </xpath>
