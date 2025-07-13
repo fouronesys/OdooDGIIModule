@@ -169,6 +169,8 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Created final stable package: ncf_management_odoo17_final_fixed.zip with working report template (July 13, 2025)
 - Fixed persistent template XPath errors: Created new simple template using basic_layout selector (July 13, 2025)
 - Created template-fixed package: ncf_management_odoo17_simple_template.zip with completely rewritten report template (July 13, 2025)
+- Fixed final template errors: Created completely standalone invoice report template without inheritance (July 13, 2025)
+- Created standalone report package: ncf_management_odoo17_standalone.zip with independent NCF invoice report (July 13, 2025)
 
 ## Deployment Strategy
 

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Standalone NCF Invoice Report Template -->
+    <template id="report_invoice_ncf_standalone">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div class="page">
+                        
+                        <!-- NCF Information Header -->
+                        <div t-if="o.requires_ncf and o.ncf_number" class="text-center mb-4" style="border: 3px solid #28a745; padding: 15px; background-color: #f8f9fa; margin: 15px 0;">
+                            <h3 style="color: #28a745; margin: 0;">NCF (Número de Comprobante Fiscal)</h3>
+                            <h2 style="font-weight: bold; color: #000; margin: 5px 0;" t-field="o.ncf_number"/>
+                            <p style="color: #6c757d; margin: 0;">
+                                Tipo: <span t-field="o.ncf_document_type"/>
+                            </p>
+                        </div>
+                        
+                        <!-- Company Information -->
+                        <div class="row">
+                            <div class="col-6">
+                                <div t-field="o.company_id.partner_id" 
+                                     t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                            </div>
+                            <div class="col-6 text-end">
+                                <h2 t-if="o.move_type == 'out_invoice'">Factura</h2>
+                                <h2 t-if="o.move_type == 'out_refund'">Nota de Crédito</h2>
+                                <p><strong>Número:</strong> <span t-field="o.name"/></p>
+                                <p><strong>Fecha:</strong> <span t-field="o.invoice_date"/></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Customer Information -->
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <strong>Facturar a:</strong>
+                                <div t-field="o.partner_id" 
+                                     t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                            </div>
+                        </div>
+                        
+                        <!-- Invoice Lines -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Descripción</th>
+                                            <th class="text-end">Cantidad</th>
+                                            <th class="text-end">Precio Unit.</th>
+                                            <th class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="o.invoice_line_ids" t-as="line">
+                                            <tr>
+                                                <td><span t-field="line.name"/></td>
+                                                <td class="text-end"><span t-field="line.quantity"/></td>
+                                                <td class="text-end"><span t-field="line.price_unit"/></td>
+                                                <td class="text-end"><span t-field="line.price_subtotal"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Totals -->
+                        <div class="row">
+                            <div class="col-6"></div>
+                            <div class="col-6">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Subtotal:</strong></td>
+                                        <td class="text-end"><span t-field="o.amount_untaxed"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Impuestos:</strong></td>
+                                        <td class="text-end"><span t-field="o.amount_tax"/></td>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <td><strong>Total:</strong></td>
+                                        <td class="text-end"><strong><span t-field="o.amount_total"/></strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    
+    <!-- NCF Invoice Report Action -->
+    <record id="action_report_invoice_ncf_standalone" model="ir.actions.report">
+        <field name="name">Factura con NCF</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ncf_management_odoo17_simple_template.report_invoice_ncf_standalone</field>
+        <field name="report_file">ncf_management_odoo17_simple_template.report_invoice_ncf_standalone</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+    
+</odoo>
