@@ -167,6 +167,8 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Created installation-ready package: ncf_management_odoo17_with_ncf_fix.zip with all model loading fixes (July 13, 2025)
 - Fixed report template XPath error: Changed to use div[@name='address'] selector instead of problematic span selectors (July 13, 2025)
 - Created final stable package: ncf_management_odoo17_final_fixed.zip with working report template (July 13, 2025)
+- Fixed persistent template XPath errors: Created new simple template using basic_layout selector (July 13, 2025)
+- Created template-fixed package: ncf_management_odoo17_simple_template.zip with completely rewritten report template (July 13, 2025)
 
 ## Deployment Strategy
 

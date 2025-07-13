@@ -55,7 +55,7 @@ Requirements:
         
         # Reports (must be loaded before menu that references them)
         'reports/dgii_reports_views.xml',
-        'reports/invoice_report_ncf.xml',
+        'reports/invoice_report_ncf_simple.xml',
         
         # Menu views (loaded last to ensure all actions exist)
         'views/menu_views.xml',

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- NCF Invoice Report Template - Simple Version -->
+    <template id="report_invoice_ncf_simple" inherit_id="account.report_invoice_document">
+        
+        <!-- Add NCF information at the beginning of the document -->
+        <xpath expr="//t[@t-call='web.basic_layout']" position="inside">
+            <div class="page">
+                <div t-if="o.requires_ncf and o.ncf_number" class="text-center mb-3" style="border: 2px solid #28a745; padding: 10px; background-color: #f8f9fa; margin: 10px 0;">
+                    <strong style="color: #28a745; font-size: 16px;">NCF (Número de Comprobante Fiscal): </strong>
+                    <span t-field="o.ncf_number" style="font-weight: bold; font-size: 18px; color: #000;"/>
+                </div>
+            </div>
+        </xpath>
+        
+    </template>
+    
+    <!-- NCF Invoice Report Action -->
+    <record id="action_report_invoice_ncf_simple" model="ir.actions.report">
+        <field name="name">Factura con NCF</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">account.report_invoice_document</field>
+        <field name="report_file">account.report_invoice_document</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+    
+</odoo>
