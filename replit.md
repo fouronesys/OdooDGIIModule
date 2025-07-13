@@ -165,6 +165,8 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Simplified invoice report template: Fixed template errors by using proper XPath selectors and t-field attributes (July 13, 2025)
 - Corrected module installation errors: Fixed model loading order and manifest file structure (July 13, 2025)
 - Created installation-ready package: ncf_management_odoo17_with_ncf_fix.zip with all model loading fixes (July 13, 2025)
+- Fixed report template XPath error: Changed to use div[@name='address'] selector instead of problematic span selectors (July 13, 2025)
+- Created final stable package: ncf_management_odoo17_final_fixed.zip with working report template (July 13, 2025)
 
 ## Deployment Strategy
 

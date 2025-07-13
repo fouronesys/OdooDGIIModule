@@ -4,15 +4,12 @@
     <!-- NCF Invoice Report Template -->
     <template id="report_invoice_ncf" inherit_id="account.report_invoice_document">
         
-        <!-- Add NCF information after invoice number -->
-        <xpath expr="//span[hasclass('o_bold')]" position="after">
-            <t t-if="o.requires_ncf and o.ncf_number">
-                <br/>
-                <div class="text-center mb-3" style="border: 2px solid #28a745; padding: 10px; background-color: #f8f9fa; margin: 10px 0;">
-                    <strong style="color: #28a745; font-size: 16px;">NCF: </strong>
-                    <span t-field="o.ncf_number" style="font-weight: bold; font-size: 18px; color: #000;"/>
-                </div>
-            </t>
+        <!-- Add NCF information after the address section -->
+        <xpath expr="//div[@name='address']" position="after">
+            <div t-if="o.requires_ncf and o.ncf_number" class="text-center mb-3" style="border: 2px solid #28a745; padding: 10px; background-color: #f8f9fa; margin: 10px 0;">
+                <strong style="color: #28a745; font-size: 16px;">NCF (Número de Comprobante Fiscal): </strong>
+                <span t-field="o.ncf_number" style="font-weight: bold; font-size: 18px; color: #000;"/>
+            </div>
         </xpath>
         
     </template>
