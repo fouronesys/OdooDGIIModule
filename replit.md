@@ -160,6 +160,11 @@ Since Odoo 17 is not available via pip installation in the current environment, 
 - Updated Flask application structure to follow Replit security guidelines (July 12, 2025)
 - Verified NCF assignment logic: Confirmed automatic prefix+number generation and sequence reduction (July 12, 2025)
 - Created final optimized package: ncf_management_odoo17_final_optimized.zip with verified NCF workflow (July 12, 2025)
+- Fixed NCF field visibility: Changed requires_ncf from computed to regular field with default value (July 13, 2025)
+- Enhanced NCF assignment for draft invoices: Improved onchange method to handle new and existing records properly (July 13, 2025)
+- Simplified invoice report template: Fixed template errors by using proper XPath selectors and t-field attributes (July 13, 2025)
+- Corrected module installation errors: Fixed model loading order and manifest file structure (July 13, 2025)
+- Created installation-ready package: ncf_management_odoo17_with_ncf_fix.zip with all model loading fixes (July 13, 2025)
 
 ## Deployment Strategy
 

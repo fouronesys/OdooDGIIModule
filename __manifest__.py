@@ -36,8 +36,12 @@ Requirements:
         'web',
     ],
     'data': [
-        # Security groups (must be loaded first)
+        # Security groups and access rights (must be loaded first)
         'security/security.xml',
+        'security/ir.model.access.csv',
+        
+        # Default data (loaded early)
+        'data/ncf_document_types.xml',
         
         # Views (core views first)
         'views/ncf_sequence_views.xml',
@@ -55,9 +59,7 @@ Requirements:
         
         # Menu views (loaded last to ensure all actions exist)
         'views/menu_views.xml',
-        
-        # Access rights (must be loaded after models are defined)
-        'security/ir.model.access.csv',
+        'views/dgii_reports_menu.xml',
     ],
 
     'demo': [],
